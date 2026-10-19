@@ -6,7 +6,7 @@
 # The base image is pinned by digest (multi-arch index of node:22.22.0-alpine3.22,
 # read from Docker Hub on 2026-10-19). Node 22.22 has node:sqlite built in.
 
-FROM node:22.22.0-alpine3.22@sha256:7aa86fa052f6e4b101557ccb56717cb4311be1334381f526fe013418fe157384 AS deps
+FROM node:26.3.0-alpine3.22@sha256:c7932b9e5e337b0e733d6e16abc1b0e104759e8b05e59ed56586cce967d26dfe AS deps
 WORKDIR /app
 COPY packages/moderation/package.json packages/moderation/package-lock.json packages/moderation/.npmrc packages/moderation/
 COPY packages/bridge/package.json packages/bridge/package-lock.json packages/bridge/
@@ -16,7 +16,7 @@ RUN for d in packages/moderation packages/bridge services/labeler; do \
       (cd "$d" && npm ci --omit=dev --ignore-scripts --no-audit --no-fund) || exit 1; \
     done
 
-FROM node:22.22.0-alpine3.22@sha256:7aa86fa052f6e4b101557ccb56717cb4311be1334381f526fe013418fe157384
+FROM node:26.3.0-alpine3.22@sha256:c7932b9e5e337b0e733d6e16abc1b0e104759e8b05e59ed56586cce967d26dfe
 ENV NODE_ENV=production
 WORKDIR /app
 COPY --from=deps /app ./
