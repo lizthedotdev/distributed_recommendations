@@ -4,8 +4,9 @@
 //
 // Serves dist/ (live build) and dist-artifact/ (offline snapshot) on 127.0.0.1 and
 // drives each at 390x844 (phone) and 1280x900 (desktop):
-//   onboarding (skippable, keyboard), Reels (rail, ⋯ More → Report with its confirm
-//   step, Block), "N hidden", Grid (card menu), the feed settings sheet (focus trap),
+//   onboarding (skippable, keyboard, page behind it inert), Reels (role=feed, focus
+//   follows j/k, rail, ⋯ More → Report with its confirm step, Block), "N hidden",
+//   Grid (focus kept after Follow, card menu), the feed settings sheet (focus trap),
 //   Settings (moderation: NSFW two-step, labeler field; install/offline panel),
 //   Matches (identity, offline demo peer), Creator studio "Publish my picks"
 //   (dry run), light and dark themes, reduced motion, and (live) offline reload
@@ -114,6 +115,7 @@ async function run(target, vp, origin, opts) {
   await onb.waitFor({ timeout: 15000 });
   check(`${tag}: onboarding opens on first run`, await onb.isVisible());
   check(`${tag}: onboarding traps focus`, await focusInside(page, "#onboarding", 25));
+  check(`${tag}: page behind onboarding is inert`, await page.evaluate(() => !!document.getElementById("screen")?.closest("[inert]")));
   await shot(page, `${tag}-onboarding-1`);
   await axe(page, `${tag} onboarding`);
   await page.click("#onb-t-science");
@@ -128,6 +130,7 @@ async function run(target, vp, origin, opts) {
   await page.keyboard.press("Enter");
   await sleep(300);
   check(`${tag}: onboarding closes`, !(await onb.isVisible().catch(() => false)));
+  check(`${tag}: page is no longer inert`, await page.evaluate(() => !document.querySelector("[inert]")));
 
   // 2. Reels.
   await page.waitForSelector(".reel[data-vid]", { timeout: 30000 });
@@ -141,6 +144,15 @@ async function run(target, vp, origin, opts) {
     await page.keyboard.press("j");
     await sleep(700);
   }
+  // Screen-reader semantics: a feed of articles; a stable-name toggle; focus follows j/k.
+  check(`${tag}: reels are a feed`, (await page.getAttribute("#reels", "role")) === "feed");
+  const sr = await page.evaluate(() => {
+    const prev = document.querySelector(".reel[data-vid] .rail-btn[id$='-heart'][aria-pressed='true']");
+    return { pressed: !!prev, name: prev?.getAttribute("aria-label") ?? "", focus: document.activeElement?.matches("article.reel") ?? false, menuRoles: document.querySelectorAll("[role=menu],[role=menuitem]").length };
+  });
+  check(`${tag}: endorse is a toggle with one name`, sr.pressed && sr.name.startsWith("Endorse "), sr.name);
+  check(`${tag}: j moves focus to the next reel`, sr.focus);
+  check(`${tag}: no role=menu without arrow keys`, sr.menuRoles === 0);
   // ⋯ More → Report → confirm step.
   await page.locator(".reel.is-active .rail-btn[id$='-more']").first().click();
   await page.waitForSelector("#reel-more");
@@ -179,6 +191,17 @@ async function run(target, vp, origin, opts) {
   await page.waitForSelector(".card[data-vid]", { timeout: 20000 });
   await shot(page, `${tag}-grid`);
   await axe(page, `${tag} grid`);
+  // Following from a card keeps focus where it was (the pill takes the button's id).
+  const fol = page.locator(".card button[id^='fol-']").first();
+  if (await fol.count()) {
+    const fid = await fol.getAttribute("id");
+    await fol.focus();
+    await page.keyboard.press("Enter");
+    await sleep(400);
+    // (Following can re-rank the card out of the grid; then focus goes to <main>, not <body>.)
+    check(`${tag}: focus stays put after Follow`, await page.evaluate((x) => document.activeElement?.id === x || (!document.getElementById(x) && document.activeElement?.id === "screen"), fid), fid);
+    await page.waitForFunction(() => !document.querySelector(".toast:not([hidden])"), null, { timeout: 6000 }).catch(() => {});
+  }
   await page.locator(".cardmenu summary").first().click();
   await shot(page, `${tag}-cardmenu`);
   check(`${tag}: card menu has Report and Block`, (await page.locator(".cardmenu[open] .menu").textContent()).includes("Report…"));
