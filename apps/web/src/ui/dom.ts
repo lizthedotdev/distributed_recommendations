@@ -41,3 +41,36 @@ export function toggle(id: string, label: string, checked: boolean, onChange: (o
     opts.hint ? h("p", { class: "hint", id: id + "-hint" }, opts.hint) : null,
   ].filter(Boolean) as HTMLElement[];
 }
+
+// One polite live region for short announcements (toasts, screen changes, the
+// active reel). It is always in the document: a region that appears together
+// with its text is often not read. Clearing first makes a repeat read again.
+let announcer: HTMLElement | null = null;
+let announceTimer: ReturnType<typeof setTimeout> | undefined;
+export function announce(msg: string): void {
+  if (typeof document === "undefined") return;
+  if (!announcer?.isConnected) {
+    announcer = h("div", { class: "sr-only", id: "announcer", role: "status", "aria-live": "polite", "aria-atomic": "true" });
+    document.body.appendChild(announcer);
+  }
+  const el = announcer;
+  el.textContent = "";
+  clearTimeout(announceTimer);
+  announceTimer = setTimeout(() => {
+    el.textContent = msg;
+    // Clear it afterwards, so a reading cursor doesn't find stale text at the end of the page.
+    announceTimer = setTimeout(() => (el.textContent = ""), 7000);
+  }, 60);
+}
+
+/**
+ * Hide everything behind a modal from assistive tech and the pointer (`inert`),
+ * as a backstop for screen readers that don't honour aria-modal. Returns the undo.
+ */
+export function inertBehind(modal: HTMLElement): () => void {
+  const els = [...document.body.children].filter((el): el is HTMLElement => el !== modal && !el.contains(modal) && el instanceof HTMLElement && !el.inert && el.id !== "announcer");
+  for (const el of els) el.inert = true;
+  return () => {
+    for (const el of els) el.inert = false;
+  };
+}

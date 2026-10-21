@@ -76,7 +76,7 @@ export function openOnboarding(app: App): void {
       if (step === 1)
         return [
           stepper(),
-          h("h3", { id: "onb-h", tabindex: "-1" }, "Where should videos come from?"),
+          h("h3", { id: "onb-h", tabindex: "-1", "aria-describedby": "onb-step" }, "Where should videos come from?"),
           h("p", { class: "small" }, "Videos come from PeerTube instances: independent servers run by communities. Your feed is ranked on this device; nobody else decides it."),
           h(
             "fieldset",
@@ -115,7 +115,7 @@ export function openOnboarding(app: App): void {
       if (step === 2)
         return [
           stepper(),
-          h("h3", { id: "onb-h", tabindex: "-1" }, "Follow someone's taste"),
+          h("h3", { id: "onb-h", tabindex: "-1", "aria-describedby": "onb-step" }, "Follow someone's taste"),
           h("p", { class: "small" }, "Following a creator's taste adds the videos they recommend (their public picks), not their own uploads. Reading them is public data; nothing about you is shared."),
           h(
             "ul",
@@ -129,7 +129,8 @@ export function openOnboarding(app: App): void {
                 null,
                 h("span", null, h("strong", null, name), h("span", { class: "muted small mono" }, ` ${c}`)),
                 st === "following"
-                  ? h("span", { class: "pill ok" }, "Following taste")
+                  ? // Same id as the button it replaces, so focus lands here instead of on <body>.
+                    h("span", { class: "pill ok", id, tabindex: "-1" }, "Following taste")
                   : h(
                       "button",
                       {
@@ -154,14 +155,15 @@ export function openOnboarding(app: App): void {
             app.examples.map((ex) => {
               const key = "example:" + ex.file;
               const on = s.taste.some((t) => t.key === key);
-              return h("button", { class: "btn sm", id: "onb-ex-" + ex.file.replace(/\W/g, "-"), disabled: on, onclick: () => (app.addTaste({ key, source: "example", list: ex.list, addedAt: Date.now() }), d.update()) }, on ? `Subscribed: ${ex.list.name}` : `Subscribe: ${ex.list.name}`);
+              // aria-disabled, not disabled: the button keeps focus after it's used.
+              return h("button", { class: "btn sm", id: "onb-ex-" + ex.file.replace(/\W/g, "-"), "aria-disabled": on ? "true" : undefined, onclick: () => on || (app.addTaste({ key, source: "example", list: ex.list, addedAt: Date.now() }), d.update()) }, on ? `Subscribed: ${ex.list.name}` : `Subscribe: ${ex.list.name}`);
             }),
           ),
           nav(go(3), "Next"),
         ];
       return [
         stepper(),
-        h("h3", { id: "onb-h", tabindex: "-1" }, "Reels or Grid"),
+        h("h3", { id: "onb-h", tabindex: "-1", "aria-describedby": "onb-step" }, "Reels or Grid"),
         h(
           "ul",
           { class: "small onb-points" },

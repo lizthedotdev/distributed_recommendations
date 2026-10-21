@@ -48,7 +48,7 @@ import { framePsi } from "./lib/match/psiFrame.ts";
 import type { DemoSaved } from "./lib/match/demo.ts";
 import { DEMO_NAME, DemoPeer, loadDemoSaved, pickDemoItems } from "./lib/match/demo.ts";
 import { InMemoryRelay } from "./lib/match/pkg.ts";
-import { h } from "./ui/dom.ts";
+import { announce, h } from "./ui/dom.ts";
 import { icon } from "./ui/icons.ts";
 import { homeScreen } from "./ui/home.ts";
 import { followScreen } from "./ui/follow.ts";
@@ -495,7 +495,10 @@ export function startApp(opts: AppOptions): App {
   const main = h("main", { id: "screen", tabindex: "-1" });
   const sheetHost = h("div", { id: "sheet-host" });
   const tasteHost = h("div", { id: "taste-host" });
-  const toastEl = h("div", { class: "toast", role: "status", "aria-live": "polite", hidden: true });
+  // Visual only: the message is spoken through `announce`, since a live region that
+  // un-hides together with its text is often not read.
+  // A labelled region, so its Undo can be found by landmark navigation.
+  const toastEl = h("div", { class: "toast", role: "region", "aria-label": "Notification", hidden: true });
   const consentHost = h("div", { id: "consent-host" });
   /** Offline and "Update available" notices (live region, so changes are announced). */
   const statusHost = h("div", { id: "status-host", role: "status", "aria-live": "polite" });
@@ -508,15 +511,17 @@ export function startApp(opts: AppOptions): App {
     bottom.appendChild(h("button", { id: `bt-${sc.id}`, "data-screen": sc.id, onclick: () => app.go(sc.id) }, icon(sc.icon), h("span", null, sc.short)));
   }
   bottom.appendChild(h("button", { id: "bt-settings", "data-screen": "sheet", "aria-label": "Settings", onclick: () => app.sheet({ type: "toggle", from: "bt-settings" }) }, icon("sliders"), h("span", null, "Settings")));
-  const menuBtn = h("button", { class: "iconbtn", id: "menu-btn", "aria-label": "Menu", "aria-haspopup": "true", "aria-expanded": "false", onclick: () => toggleMenu() }, h("span", { "aria-hidden": "true", class: "dots" }, "⋯"));
+  // A disclosure (button + aria-expanded) of plain buttons, not role="menu": that
+  // role promises arrow-key navigation, and screen readers switch modes for it.
+  const menuBtn = h("button", { class: "iconbtn", id: "menu-btn", "aria-label": "Menu", "aria-controls": "app-menu", "aria-expanded": "false", onclick: () => toggleMenu() }, h("span", { "aria-hidden": "true", class: "dots" }, "⋯"));
   const menu = h(
     "div",
-    { class: "menu", id: "app-menu", role: "menu", hidden: true },
-    h("button", { role: "menuitem", onclick: () => (closeMenu(), app.sheet({ type: "open", from: "menu-btn" })) }, icon("sliders", 18), "Feed settings…"),
-    h("button", { role: "menuitem", onclick: () => (closeMenu(), app.go("recipe")) }, "Recipe import & export"),
-    h("button", { role: "menuitem", onclick: () => (closeMenu(), app.go("settings")) }, "Sharing & privacy"),
-    h("button", { role: "menuitem", onclick: () => (closeMenu(), app.go("matches")) }, "Matches"),
-    telemetryConfig.glitchtip ? h("button", { role: "menuitem", onclick: () => (closeMenu(), app.openFeedback()) }, "Report a bug or send feedback…") : null,
+    { class: "menu", id: "app-menu", hidden: true },
+    h("button", { onclick: () => (closeMenu(), app.sheet({ type: "open", from: "menu-btn" })) }, icon("sliders", 18), "Feed settings…"),
+    h("button", { onclick: () => (closeMenu(), app.go("recipe")) }, "Recipe import & export"),
+    h("button", { onclick: () => (closeMenu(), app.go("settings")) }, "Sharing & privacy"),
+    h("button", { onclick: () => (closeMenu(), app.go("matches")) }, "Matches"),
+    telemetryConfig.glitchtip ? h("button", { onclick: () => (closeMenu(), app.openFeedback()) }, "Report a bug or send feedback…") : null,
   );
   function toggleMenu() {
     const open = menu.hidden;
@@ -530,6 +535,11 @@ export function startApp(opts: AppOptions): App {
   }
   document.addEventListener?.("click", (e) => {
     if (!menu.hidden && !menu.contains(e.target as Node) && e.target !== menuBtn && !menuBtn.contains(e.target as Node)) closeMenu();
+  });
+  // Tabbing out of the open menu closes it, so it doesn't sit over the page.
+  menu.addEventListener("focusout", (e) => {
+    const to = (e as FocusEvent).relatedTarget as Node | null;
+    if (to && !menu.contains(to) && to !== menuBtn) closeMenu();
   });
   menu.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
@@ -577,6 +587,11 @@ export function startApp(opts: AppOptions): App {
   );
 
   let toastTimer: ReturnType<typeof setTimeout> | undefined;
+  // Don't pull the toast (its Undo, the copy-link field) out from under focus or the pointer.
+  const hideToast = () => {
+    if (toastEl.contains(document.activeElement) || toastEl.matches(":hover")) toastTimer = setTimeout(hideToast, 1500);
+    else toastEl.hidden = true;
+  };
   let renderQueued = false;
   let sheetBuiltStamp = -1;
   let sheetOpenRendered = false;
@@ -597,7 +612,9 @@ export function startApp(opts: AppOptions): App {
     // The Reels view is a persistent element (players, scroll position): don't
     // detach it if it's already there, or every iframe would reload.
     if (main.firstElementChild !== el || main.childElementCount !== 1) main.replaceChildren(el);
-    if (focusId && !main.contains(document.activeElement)) document.getElementById(focusId)?.focus({ preventScroll: true });
+    // Restore focus by id; if that control is gone (its card left the feed), park it on
+    // <main> rather than letting it fall to <body>, where screen readers lose their place.
+    if (focusId && !main.contains(document.activeElement)) (document.getElementById(focusId) ?? main).focus({ preventScroll: true });
     // Sheet: rebuilt only when its contents changed, so a background reload doesn't
     // reset a slider mid-drag.
     if (s.sheet.open && (!sheetOpenRendered || sheetBuiltStamp !== s.sheetStamp)) {
@@ -1221,16 +1238,24 @@ export function startApp(opts: AppOptions): App {
       toastEl.replaceChildren(h("span", null, msg));
       if (action) toastEl.appendChild(h("button", { class: "linkbtn toast-act", onclick: () => { toastEl.hidden = true; action.run(); } }, action.label));
       toastEl.hidden = false;
+      announce(msg);
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => (toastEl.hidden = true), action ? 5000 : 2600);
+      toastTimer = setTimeout(hideToast, action ? 5000 : 2600);
     },
     go(screen) {
+      const changed = screen !== s.screen;
       s.screen = screen;
       kv.set("mf.v1.tab", screen);
       if (s.sheet.open) s.sheet = sheetReduce(s.sheet, { type: "close" });
       if (screen === "matches") void app.match.sync().catch(() => undefined).then(() => app.match.pump());
       render();
       window.scrollTo?.({ top: 0 });
+      // The tab buttons keep focus, so say where we went.
+      if (changed) {
+        const label = SCREENS.find((x) => x.id === screen)?.label ?? (screen === "recipe" ? "Recipe import & export" : screen);
+        if (opts.mode === "live") document.title = screen === "home" ? APP_NAME : `${label} · ${APP_NAME}`;
+        announce(label);
+      }
     },
     setView(v) {
       if (v !== s.view) app.telemetry.event("view-mode", { view: v });
@@ -1471,7 +1496,7 @@ export function startApp(opts: AppOptions): App {
         toastEl.replaceChildren(h("span", null, "Copy the link:"), input);
         toastEl.hidden = false;
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => (toastEl.hidden = true), 8000);
+        toastTimer = setTimeout(hideToast, 8000);
         input.focus();
         input.select();
       };

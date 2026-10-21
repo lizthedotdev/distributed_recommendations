@@ -13,7 +13,7 @@ import type { PlayerMode } from "../lib/reels.ts";
 import { disclosureIndex } from "../lib/candidates.ts";
 import { parseChannelInput } from "../lib/handles.ts";
 import { formatDuration, placeholderGradient, videoHost } from "../lib/videos.ts";
-import { h } from "./dom.ts";
+import { announce, h } from "./dom.ts";
 import { icon } from "./icons.ts";
 import { chip, emptyFeed, feedBar, hashId } from "./home.ts";
 import { EmbedPlayer } from "./player.ts";
@@ -60,13 +60,23 @@ class ReelsView {
   private version = -1;
   private io: IntersectionObserver | null = null;
   private emptyEl: HTMLElement | null = null;
+  /** What the end-of-feed block shows; rebuilt only when it changes. */
+  private endKey = "";
 
   constructor(readonly app: App) {
-    this.scroller = h("div", { class: "reels", id: "reels", "aria-busy": "false" });
-    this.end = h("div", { class: "reel-end", "aria-live": "polite" });
+    // The WAI-ARIA feed pattern: articles in a scrollable list that loads more.
+    this.scroller = h("div", { class: "reels", id: "reels", role: "feed", "aria-busy": "false", "aria-labelledby": "reels-h", "aria-describedby": "reels-keys" });
+    // A feed may only own articles, so the end block (and the empty state) are articles
+    // too. Not a live region: reaching the last reel is announced instead.
+    this.end = h("article", { class: "reel-end" });
     this.scroller.appendChild(this.end);
     this.bar = feedBar(app, true);
-    this.hint = h("p", { class: "reels-hint muted small" }, "↑ ↓ or j k to move · space to pause · m to mute");
+    this.hint = h(
+      "p",
+      { class: "reels-hint muted small", id: "reels-keys" },
+      h("span", { "aria-hidden": "true" }, "↑ ↓ or j k to move · space to pause · m to mute"),
+      h("span", { class: "sr-only" }, "Up and Down arrows, or J and K, move between videos. Space pauses, M mutes."),
+    );
     this.root = h("section", { class: "reels-screen", "aria-labelledby": "reels-h" }, h("h2", { class: "sr-only", id: "reels-h" }, "Reels"), this.bar, this.scroller, this.hint);
     const IO = (globalThis as { IntersectionObserver?: typeof IntersectionObserver }).IntersectionObserver;
     if (IO) {
@@ -84,6 +94,11 @@ class ReelsView {
       );
     }
     document.addEventListener("keydown", (e) => this.onKey(e));
+    // Tabbing (or a screen reader's cursor) into another reel makes it the active one.
+    this.scroller.addEventListener("focusin", (e) => {
+      const i = this.nodes.findIndex((n) => n.el.contains(e.target as Node));
+      if (i >= 0 && i !== this.active) this.scrollTo(i);
+    });
   }
 
   private get live(): boolean {
@@ -105,7 +120,7 @@ class ReelsView {
     for (const n of this.nodes) this.refresh(n);
     if (!items.length) {
       const allFailed = app.s.instances.size > 0 && [...app.s.instances.values()].every((x) => x.status === "error");
-      const el = loading ? h("div", { class: "reel reel-skeleton", "aria-label": "Loading" }, h("div", { class: "reel-media" }, h("span", { class: "muted" }, "Loading videos…"))) : h("div", { class: "reel reel-empty" }, emptyFeed(app, allFailed));
+      const el = loading ? h("article", { class: "reel reel-skeleton" }, h("div", { class: "reel-media" }, h("span", { class: "muted" }, "Loading videos…"))) : h("article", { class: "reel reel-empty" }, emptyFeed(app, allFailed));
       this.emptyEl?.remove();
       this.emptyEl = el;
       this.scroller.insertBefore(el, this.end);
@@ -113,20 +128,26 @@ class ReelsView {
       this.emptyEl.remove();
       this.emptyEl = null;
     }
-    this.end.replaceChildren(
-      items.length
-        ? loading
-          ? h("span", { class: "muted small" }, "Loading more…")
-          : h(
-              "div",
-              { class: "stack", style: { "align-items": "center", "text-align": "center" } },
-              h("strong", null, "That's everything for now"),
-              h("span", { class: "muted small" }, "Follow more channels, subscribe to a taste list, or change the recipe for more."),
-              h("div", { class: "row", style: { "justify-content": "center" } }, h("button", { class: "btn sm", onclick: () => app.go("follow") }, "Follow & taste"), h("button", { class: "btn sm", onclick: () => app.sheet({ type: "open", section: "recipe" }) }, "Feed settings")),
-              hiddenLink(app, app.s.modHidden, "reels-hidden"),
-            )
-        : "",
-    );
+    const endKey = `${items.length > 0}|${loading}|${app.s.modHidden.length}`;
+    if (endKey !== this.endKey) {
+      this.endKey = endKey;
+      if (items.length && !loading) this.end.setAttribute("aria-label", "End of feed");
+      else this.end.removeAttribute("aria-label");
+      this.end.replaceChildren(
+        items.length
+          ? loading
+            ? h("span", { class: "muted small" }, "Loading more…")
+            : h(
+                "div",
+                { class: "stack", style: { "align-items": "center", "text-align": "center" } },
+                h("strong", null, "That's everything for now"),
+                h("span", { class: "muted small" }, "Follow more channels, subscribe to a taste list, or change the recipe for more."),
+                h("div", { class: "row", style: { "justify-content": "center" } }, h("button", { class: "btn sm", onclick: () => app.go("follow") }, "Follow & taste"), h("button", { class: "btn sm", onclick: () => app.sheet({ type: "open", section: "recipe" }) }, "Feed settings")),
+                hiddenLink(app, app.s.modHidden, "reels-hidden"),
+              )
+          : "",
+      );
+    }
     if (this.active >= this.nodes.length) this.active = -1;
     if (this.active < 0 && this.nodes.length) {
       // First paint, or the active reel was removed: activate what's on screen.
@@ -170,6 +191,7 @@ class ReelsView {
     // Items only get appended or removed, so DOM order follows `next`.
     for (const n of next) if (n.el.parentNode !== this.scroller || n.el.nextSibling === null) this.scroller.insertBefore(n.el, this.end);
     this.nodes = next;
+    next.forEach((n, i) => n.el.setAttribute("aria-posinset", String(i + 1)));
     const idx = activeId ? next.findIndex((n) => n.id === activeId) : -1;
     if (idx !== this.active) {
       // The active reel was removed (not interested): the one now in its place takes over.
@@ -195,7 +217,8 @@ class ReelsView {
     const rail = h("div", { class: "reel-rail", role: "group", "aria-label": "Actions" });
     const el = h(
       "article",
-      { class: "reel", "data-vid": v.id, "aria-label": `${v.title}, by ${v.creatorName ?? v.creator}` },
+      // aria-setsize -1: the feed keeps loading, so its length isn't known.
+      { class: "reel", "data-vid": v.id, tabindex: "-1", "aria-setsize": "-1", "aria-label": `${v.title}, by ${v.creatorName ?? v.creator}` },
       media,
       info,
       rail,
@@ -282,20 +305,23 @@ class ReelsView {
     const btn = (cls: string, ic: string, label: string, aria: string, onclick: () => void, extra: Record<string, unknown> = {}) =>
       h("button", { class: "rail-btn " + cls, id: `rail-${hid}-${ic}`, "aria-label": aria, onclick, ...extra }, icon(ic, 26), h("span", { "aria-hidden": "true" }, label));
     const railButtons: (HTMLElement | null)[] = [
-      btn(endorsed ? "on" : "", "heart", endorsed ? "Endorsed" : "Endorse", endorsed ? `Remove endorsement of ${v.title}` : `Endorse ${v.title}`, () => {
+      // Toggles keep one name and expose state with aria-pressed (a name that also flips reads as a contradiction).
+      btn(endorsed ? "on" : "", "heart", endorsed ? "Endorsed" : "Endorse", `Endorse ${v.title}`, () => {
         app.toggleEndorse(v, item.primary);
         this.refresh(n);
       }, { "aria-pressed": String(endorsed) }),
+      // aria-disabled, not disabled: after Follow, focus stays on this button instead of dropping to <body>.
       btn(following ? "on" : "", following ? "check" : "plus", following ? "Following" : "Follow", following ? `Following ${v.creatorName ?? v.creator}` : `Follow ${v.creatorName ?? v.creator}`, () => {
+        if (following) return;
         const ref = parseChannelInput(v.creator);
-        if (ref && !following) app.follow(ref, v.creatorName);
+        if (ref) app.follow(ref, v.creatorName);
         this.refresh(n);
-      }, { disabled: following }),
+      }, { "aria-disabled": following ? "true" : undefined }),
       (() => {
         const name = v.creatorName ?? v.creator;
         const t = tasteButtonText(app.tasteState(v.creator), name);
-        return btn("taste-btn" + (t.on ? " on" : ""), "taste", t.label, t.aria, () => app.openTaste(v.creator, name, `rail-${hid}-taste`), {
-          disabled: t.disabled,
+        return btn("taste-btn" + (t.on ? " on" : ""), "taste", t.label, t.aria, () => t.disabled || app.openTaste(v.creator, name, `rail-${hid}-taste`), {
+          "aria-disabled": t.disabled ? "true" : undefined,
           "aria-haspopup": t.disabled ? undefined : "dialog",
           title: t.disabled ? "No public picks yet" : undefined,
         });
@@ -313,13 +339,13 @@ class ReelsView {
           ? btn("on", "match", live.status === "active" ? "Matched" : "Requested", `${live.status === "active" ? "Matched" : "Match requested"} with ${target.name}`, () => app.go("matches"))
           : btn("match", "match", "Match", `Request match with ${target.name}`, () => app.requestMatchWith(target))
         : null,
-      this.live ? btn("", muted ? "mute" : "volume", muted ? "Muted" : "Sound", muted ? "Unmute" : "Mute", () => this.toggleMute(), { "aria-pressed": String(!muted) }) : null,
+      this.live ? btn("", muted ? "mute" : "volume", muted ? "Muted" : "Sound", "Mute", () => this.toggleMute(), { "aria-pressed": String(muted) }) : null,
       btn("", "more", "More", `More for ${v.title}: report, block`, () => this.more(n), { "aria-haspopup": "dialog" }),
     ];
     n.rail.replaceChildren(...(railButtons.filter(Boolean) as HTMLElement[]));
     if (refocus) document.getElementById(refocus)?.focus({ preventScroll: true });
     n.tap.hidden = !(n.player?.ready && n.mode === "play");
-    n.tap.setAttribute("aria-label", app.s.reels.paused ? "Play" : "Pause");
+    n.tap.setAttribute("aria-label", `${app.s.reels.paused ? "Play" : "Pause"} ${v.title}`);
   }
 
   /** The rail's ⋯: Report, Block or mute, Creator studio. */
@@ -391,6 +417,7 @@ class ReelsView {
 
   setActive(i: number) {
     if (i < 0 || i >= this.nodes.length || i === this.active) return;
+    const first = this.active < 0;
     this.active = i;
     this.app.s.reels.active = i;
     const plan = playerPlan(i, this.nodes.length);
@@ -418,6 +445,11 @@ class ReelsView {
     );
     if (shouldLoadMore(i, this.nodes.length)) this.app.loadMoreReels();
     this.refresh(n);
+    // Swiping or scrolling moves no focus, so say which video is now playing.
+    // (Keyboard moves focus to the reel, which reads its own name.)
+    const last = i === this.nodes.length - 1 && !this.app.s.reels.loading ? " That's everything for now." : "";
+    if (!first && !n.el.contains(document.activeElement)) announce(`${v.title}, by ${v.creatorName ?? v.creator}. Video ${i + 1}.${last}`);
+    else if (last) announce(last.trim());
   }
 
   private scrollTo(i: number) {
@@ -465,8 +497,12 @@ class ReelsView {
     if (!k) return;
     if (k === "toggle" && t?.closest("button, a")) return; // space activates the focused button
     e.preventDefault();
-    if (k === "next") this.scrollTo(this.active + 1);
-    else if (k === "prev") this.scrollTo(this.active - 1);
+    if (k === "next" || k === "prev") {
+      const i = Math.max(0, Math.min(this.nodes.length - 1, this.active + (k === "next" ? 1 : -1)));
+      this.scrollTo(i);
+      // Focus follows the keyboard unless it's parked outside the feed (the view switch, the recipe pill).
+      if (!t || t === document.body || this.scroller.contains(t)) this.nodes[i]?.el.focus({ preventScroll: true });
+    }
     else if (k === "toggle") this.togglePause();
     else if (k === "mute") this.toggleMute();
   }

@@ -45,6 +45,8 @@ function card(app: App, item: ModeratedItem, disclosures: ReturnType<typeof disc
       class: "thumb" + (blurred ? " blurred" : ""),
       style: { background: placeholderGradient(v.creator + v.title) },
       "aria-label": blurred ? undefined : `Play ${v.title}`,
+      // Ids let focus find its way back here after a re-render rebuilt the card (closing the player).
+      id: blurred ? undefined : `play-${hashId(v.id)}`,
       onclick: blurred ? undefined : () => app.watch(v, item.primary),
     },
     v.thumbnailUrl && app.mode === "live"
@@ -65,17 +67,19 @@ function card(app: App, item: ModeratedItem, disclosures: ReturnType<typeof disc
     "article",
     { class: "card", "data-vid": v.id },
     thumb,
-    h("h3", { class: blurred ? "blurred-title" : undefined }, blurred ? h("span", { class: "muted" }, "Title hidden (sensitive)") : h("button", { onclick: () => app.watch(v, item.primary) }, v.title)),
+    h("h3", { class: blurred ? "blurred-title" : undefined }, blurred ? h("span", { class: "muted" }, "Title hidden (sensitive)") : h("button", { id: `title-${hashId(v.id)}`, onclick: () => app.watch(v, item.primary) }, v.title)),
     h(
       "div",
       { class: "byline" },
       h("span", { title: v.creator }, v.creatorName ?? v.creator),
       following
-        ? h("span", { class: "pill ok" }, "Following")
+        ? // Same id as the Follow button it replaces, so focus lands here rather than on <body>.
+          h("span", { class: "pill ok", id: `fol-${hashId(v.id)}`, tabindex: "-1" }, "Following")
         : h(
             "button",
             {
               class: "linkbtn",
+              id: `fol-${hashId(v.id)}`,
               "aria-label": `Follow ${v.creatorName ?? v.creator}`,
               onclick: () => {
                 const ref = parseChannelInput(v.creator);
@@ -135,14 +139,15 @@ function cardMenu(app: App, item: RankedItem): HTMLElement {
   const tasteLabel = st === "following" ? `Following ${name}'s taste…` : st === "unavailable" ? `${name}: no public picks yet` : `Follow ${name}'s taste…`;
   details.append(
     h("summary", { "aria-label": `More for ${v.title}`, id: id + "-btn" }, h("span", { "aria-hidden": "true" }, "⋯")),
+    // A disclosure of plain buttons: role="menu" would promise arrow-key navigation it doesn't have.
     h(
       "div",
-      { class: "menu", role: "menu" },
-      h("button", { role: "menuitem", disabled: st === "unavailable", onclick: () => (close(), app.openTaste(v.creator, name, id + "-btn")) }, icon("taste", 18), tasteLabel),
-      h("button", { role: "menuitem", onclick: () => (close(), (app.s.ui.studioInput = undefined), app.loadStudio(v.creator), app.go("studio")) }, icon("studio", 18), "Creator studio"),
-      h("button", { role: "menuitem", onclick: () => (close(), app.notInterested(v)) }, icon("eyeoff", 18), "Not interested"),
-      h("button", { role: "menuitem", onclick: () => (close(), openBlock(app, v, id + "-btn")) }, icon("block", 18), "Block or mute…"),
-      h("button", { role: "menuitem", onclick: () => (close(), openReport(app, v, id + "-btn")) }, icon("flag", 18), "Report…"),
+      { class: "menu" },
+      h("button", { disabled: st === "unavailable", onclick: () => (close(), app.openTaste(v.creator, name, id + "-btn")) }, icon("taste", 18), tasteLabel),
+      h("button", { onclick: () => (close(), (app.s.ui.studioInput = undefined), app.loadStudio(v.creator), app.go("studio")) }, icon("studio", 18), "Creator studio"),
+      h("button", { onclick: () => (close(), app.notInterested(v)) }, icon("eyeoff", 18), "Not interested"),
+      h("button", { onclick: () => (close(), openBlock(app, v, id + "-btn")) }, icon("block", 18), "Block or mute…"),
+      h("button", { onclick: () => (close(), openReport(app, v, id + "-btn")) }, icon("flag", 18), "Report…"),
     ),
   );
   // Look up whether the creator publishes picks only when the menu opens.

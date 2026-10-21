@@ -3,7 +3,7 @@
 // aria-modal, labelled by its heading, focus trapped inside, Escape and the scrim
 // close it, focus returns to whatever opened it. Re-render by calling `update`.
 
-import { h } from "./dom.ts";
+import { h, inertBehind } from "./dom.ts";
 import type { Child } from "./dom.ts";
 
 export interface DialogHandle {
@@ -35,7 +35,10 @@ const open = new Map<string, DialogHandle>();
 
 export function openDialog(o: DialogOptions): DialogHandle {
   open.get(o.id)?.close();
-  const prev = (typeof o.returnFocus === "string" ? document.getElementById(o.returnFocus) : o.returnFocus) ?? (document.activeElement as HTMLElement | null);
+  const opener = (typeof o.returnFocus === "string" ? document.getElementById(o.returnFocus) : o.returnFocus) ?? (document.activeElement as HTMLElement | null);
+  // A re-render can replace the opener while the dialog is up: fall back to its id.
+  const openerId = typeof o.returnFocus === "string" ? o.returnFocus : opener?.id;
+  const prev = () => (opener?.isConnected ? opener : openerId ? document.getElementById(openerId) : null);
   const titleId = `${o.id}-title`;
   const content = h("div", { class: "dialog-body" });
   const closeBtn = h("button", { class: "iconbtn dialog-close", type: "button", "aria-label": "Close", onclick: () => handle.close() }, h("span", { "aria-hidden": "true" }, "×"));
@@ -54,16 +57,18 @@ export function openDialog(o: DialogOptions): DialogHandle {
       content.replaceChildren();
       for (const c of o.body(handle).flat(Infinity as 1) as Child[]) if (c !== null && c !== undefined && c !== false) content.append(typeof c === "object" ? (c as Node) : String(c));
       if (focusId && dialog.contains(document.getElementById(focusId))) document.getElementById(focusId)?.focus({ preventScroll: true });
-      else if (!dialog.contains(document.activeElement)) first()?.focus({ preventScroll: true });
+      // The focused control was removed or disabled: don't leave focus on <body>.
+      if (!dialog.contains(document.activeElement)) first()?.focus({ preventScroll: true });
     },
     close() {
       if (closed) return;
       closed = true;
       open.delete(o.id);
       scrim.remove();
+      restoreInert();
       document.body.classList.toggle("dialog-open", open.size > 0);
       o.onClose?.();
-      prev?.focus?.({ preventScroll: true });
+      prev()?.focus?.({ preventScroll: true });
     },
   };
   const first = () => (o.initialFocus ? document.getElementById(o.initialFocus) : null) ?? (content.querySelector(FOCUSABLE) as HTMLElement | null) ?? closeBtn;
@@ -87,6 +92,7 @@ export function openDialog(o: DialogOptions): DialogHandle {
     }
   });
   document.body.appendChild(scrim);
+  const restoreInert = inertBehind(scrim);
   document.body.classList.add("dialog-open");
   open.set(o.id, handle);
   handle.update();

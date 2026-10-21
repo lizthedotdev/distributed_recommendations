@@ -6,7 +6,7 @@ import type { App } from "../app.ts";
 import type { SourceKind, Video } from "../lib/core.ts";
 import { parseChannelInput } from "../lib/handles.ts";
 import { embedUrl } from "../lib/videos.ts";
-import { h } from "./dom.ts";
+import { h, inertBehind } from "./dom.ts";
 import { chip } from "./home.ts";
 import { openBlock, openReport } from "./moderation.ts";
 import { reasonText } from "../lib/modstate.ts";
@@ -14,6 +14,8 @@ import { reasonText } from "../lib/modstate.ts";
 export function openWatch(app: App, v: Video, via: SourceKind | undefined, onClose: () => void): void {
   const { s } = app;
   const prevFocus = document.activeElement as HTMLElement | null;
+  // The feed can re-render while the player is open and replace the card: keep the id too.
+  const prevId = prevFocus?.id;
   const src = app.mode === "live" ? embedUrl(v, { p2p: s.settings.p2p }) : null;
   const watchUrl = v.url ?? v.id;
   // Links, search and deep links never went through the feed's pre-filter: judge here.
@@ -25,7 +27,7 @@ export function openWatch(app: App, v: Video, via: SourceKind | undefined, onClo
     h("iframe", {
       class: "player",
       src: src!,
-      title: v.title,
+      title: `Video player: ${v.title}`,
       allow: "fullscreen; picture-in-picture; autoplay",
       referrerpolicy: "no-referrer",
       sandbox: "allow-scripts allow-same-origin allow-popups allow-presentation",
@@ -59,8 +61,10 @@ export function openWatch(app: App, v: Video, via: SourceKind | undefined, onClo
                 onclick: () => {
                   blurred = false;
                   app.reveal(v.id);
-                  const next = src ? iframe() : h("div", { class: "player ph" }, h("strong", null, "Playback needs the network"));
+                  const next = src ? iframe() : h("div", { class: "player ph", tabindex: "-1" }, h("strong", null, "Playback needs the network"));
                   player.replaceWith(next);
+                  // The focused button just went away: move focus to what replaced it.
+                  next.focus();
                 },
               },
               "Show anyway",
@@ -75,23 +79,27 @@ export function openWatch(app: App, v: Video, via: SourceKind | undefined, onClo
         h("div", { class: "stack", style: { "align-items": "center" } }, h("strong", null, app.mode === "snapshot" ? "Playback needs the network" : "This video can't be embedded"), h("span", { class: "small" }, app.mode === "snapshot" ? "This offline snapshot can't reach PeerTube. The watch is still recorded locally, as it would be in the app." : "Open it on its instance instead.")),
       );
 
-  const endorseBtn = h("button", { class: "btn" });
+  // One name; the state is aria-pressed (the visible text also says "Endorsed").
+  const endorseBtn = h("button", { class: "btn", "aria-label": "Endorse" });
   const followBtn = h("button", { class: "btn" });
   const refresh = () => {
     const on = app.isEndorsed(v.id);
-    endorseBtn.textContent = on ? "Endorsed ✓" : "Endorse";
+    endorseBtn.replaceChildren(on ? "Endorsed" : "Endorse", on ? h("span", { "aria-hidden": "true" }, " ✓") : "");
     endorseBtn.className = on ? "btn on" : "btn match";
     endorseBtn.setAttribute("aria-pressed", String(on));
     const f = app.isFollowing(v.creator);
     followBtn.textContent = f ? "Following" : `Follow ${v.creatorName ?? v.creator}`;
     followBtn.className = f ? "btn on" : "btn follow";
-    followBtn.disabled = f;
+    // aria-disabled, not disabled: focus stays on the button after following.
+    if (f) followBtn.setAttribute("aria-disabled", "true");
+    else followBtn.removeAttribute("aria-disabled");
   };
   endorseBtn.onclick = () => {
     app.toggleEndorse(v, via);
     refresh();
   };
   followBtn.onclick = () => {
+    if (app.isFollowing(v.creator)) return;
     const ref = parseChannelInput(v.creator);
     if (ref) app.follow(ref, v.creatorName);
     refresh();
@@ -100,9 +108,10 @@ export function openWatch(app: App, v: Video, via: SourceKind | undefined, onClo
 
   const close = () => {
     scrim.remove();
+    restoreInert();
     document.removeEventListener("keydown", onKey);
     onClose();
-    prevFocus?.focus?.({ preventScroll: true });
+    (prevFocus?.isConnected ? prevFocus : prevId ? document.getElementById(prevId) : null)?.focus?.({ preventScroll: true });
   };
   const onKey = (e: KeyboardEvent) => {
     if (e.key === "Escape" && !document.body.classList.contains("dialog-open")) close();
@@ -147,6 +156,7 @@ export function openWatch(app: App, v: Video, via: SourceKind | undefined, onClo
     ),
   );
   document.body.appendChild(scrim);
+  const restoreInert = inertBehind(scrim);
   document.addEventListener("keydown", onKey);
   closeBtn.focus();
 }
