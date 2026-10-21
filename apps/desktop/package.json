@@ -1,7 +1,7 @@
 {
   "name": "@match-feed/desktop",
   "version": "0.1.0",
-  "description": "Desktop shell (Tauri v2) around the Multiverse Video web client.",
+  "description": "Desktop shell (Tauri v2) around the Folkfeed web client.",
   "license": "Apache-2.0",
   "type": "module",
   "private": true,

@@ -15,7 +15,7 @@ export interface BuiltinRecipe {
 export const DISCOVERY_RECIPE: Recipe = parseRecipe({
   version: 1,
   name: "Discovery: taste lists + new creators",
-  author: "Multiverse Video",
+  author: "Folkfeed",
   weights: { follow: 3, taste: 2, match: 6, circle: 6, second: 6, explore: 1 },
   recencyHalfLifeDays: 30,
   exploreShare: EXPLORE_SHARE.recommendedMax,

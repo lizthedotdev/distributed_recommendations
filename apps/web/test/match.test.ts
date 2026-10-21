@@ -26,7 +26,7 @@ test("NIP-19 vectors: npub and nsec round-trip", () => {
   assert.equal(parseNpub(nsec), null, "wrong prefix");
   assert.equal(parseNpub(npub.slice(0, -1) + "q"), null, "bad checksum");
   assert.equal(parseNpub("hello"), null);
-  assert.equal(findNpub(`Support me! Multiverse Video: nostr:${npub} thanks`), pub);
+  assert.equal(findNpub(`Support me! Folkfeed: nostr:${npub} thanks`), pub);
   assert.equal(findNpub("no key here"), null);
   assert.match(shortNpub(pub), /^npub10elf…ptg|^npub10elfc…jptg$/);
 });

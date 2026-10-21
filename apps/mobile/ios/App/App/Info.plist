@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-        <string>Multiverse Video</string>
+        <string>Folkfeed</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -66,7 +66,7 @@
 			<string>app-share-handoff</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>multiversevideo</string>
+				<string>folkfeed</string>
 			</array>
 		</dict>
 	</array>

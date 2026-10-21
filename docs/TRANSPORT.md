@@ -1,4 +1,4 @@
-# Multiverse Video: metadata-private transport (Oblivious HTTP)
+# Folkfeed: metadata-private transport (Oblivious HTTP)
 
 How Match traffic reaches Nostr relays without showing the relays who you are
 (THREAT_MODEL T5). Code: `packages/transport`. Deployment: `infra/ohttp`.

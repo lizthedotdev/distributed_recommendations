@@ -1,6 +1,8 @@
-# Multiverse Video
+# Folkfeed
 
-Distributed recommendations for federated video. Multiverse Video is a client-side layer on top
+*Video that spreads through people.* By Folkfork Studios, a brand of The Multiverse School.
+
+Distributed recommendations for federated video. Folkfeed is a client-side layer on top
 of PeerTube: your feed is ranked **on your device** from creators you follow, public taste
 lists you subscribe to, reserved slots for new creators, and (later) private, mutual,
 expiring **matches** with people you choose and small **circles** that pool picks. No
@@ -22,7 +24,7 @@ distributed DP noise), also without real relays or UI. Private creator analytics
 `packages/analytics` + Janus), a moderation labeler service and creator taste-list
 publishing are prototypes; opt-in crash reports and usage analytics have self-hosted
 servers. Android, iOS and desktop shells wrap
-the web client (app name **Multiverse Video**). See "Status" below.
+the web client (app name **Folkfeed**). See "Status" below.
 
 ## Try it
 

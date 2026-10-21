@@ -1,6 +1,6 @@
 # Security policy
 
-This project (**Multiverse Video**) is published by
+This project (**Folkfeed**, by Folkfork Studios, a brand of The Multiverse School) is published by
 **The Multiverse School**. It is a privacy tool, so we treat privacy flaws as security
 flaws: if something lets a server, relay, peer or observer learn what a user watched,
 endorsed or matched with, beyond what [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md)

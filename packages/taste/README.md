@@ -1,6 +1,6 @@
 # @match-feed/taste
 
-Lets creators **publish** their public picks for Multiverse Video's Follow taste (docs/WEB_APP.md, "Follow taste"). One set of picks goes out in two formats, which match the web app's resolver sources 1 and 2:
+Lets creators **publish** their public picks for Folkfeed's Follow taste (docs/WEB_APP.md, "Follow taste"). One set of picks goes out in two formats, which match the web app's resolver sources 1 and 2:
 
 1. **Signed Nostr list.** A NIP-51 *video curation set*: kind 30005, public items only. It references the NIP-71 video events that `packages/bridge` publishes.
 2. **Taste-list v1 JSON.** You host this file at a URL and link it from the channel description.

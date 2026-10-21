@@ -131,7 +131,7 @@ export function envelope(event: Record<string, unknown>, opts: { eventId: string
   const body = { ...event, event_id: opts.eventId, timestamp: opts.now.getTime() / 1000 };
   const payload = JSON.stringify(body);
   return [
-    JSON.stringify({ event_id: opts.eventId, sent_at: opts.now.toISOString(), sdk: { name: "meme-video.feedback", version: "1" } }),
+    JSON.stringify({ event_id: opts.eventId, sent_at: opts.now.toISOString(), sdk: { name: "folkfeed.feedback", version: "1" } }),
     JSON.stringify({ type: "event", content_type: "application/json", length: new TextEncoder().encode(payload).length }),
     payload,
   ].join("\n");

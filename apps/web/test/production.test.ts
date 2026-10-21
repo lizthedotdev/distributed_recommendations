@@ -17,14 +17,34 @@ const vid = (over: Record<string, unknown> = {}) =>
 
 test("brand: one constant drives index.html, the artifact title and the manifest", () => {
   const brand = JSON.parse(readFileSync(new URL("../src/brand.json", import.meta.url), "utf8"));
-  assert.equal(brand.name, "Multiverse Video");
+  assert.equal(brand.name, "Folkfeed");
   const mobile = JSON.parse(readFileSync(new URL("../../mobile/brand.json", import.meta.url), "utf8"));
   assert.equal(mobile.displayName, brand.name, "apps/mobile/brand.json is kept in step");
   assert.equal(mobile.appId, "school.themultiverse.video");
   const html = readFileSync(new URL("../public/index.html", import.meta.url), "utf8");
   assert.ok(html.includes("<title>__APP_NAME__</title>"));
-  // Former names (Match Feed, then Meme Video) must not come back into the shell.
-  assert.ok(!/Match Feed|Meme Video/.test(html));
+  assert.equal(brand.tagline, "Video that spreads through people.");
+  assert.equal(brand.studio, "Folkfork Studios");
+  assert.equal(brand.publisher, "The Multiverse School", "The Multiverse School stays the legal publisher");
+  assert.equal(mobile.customUrlScheme, "folkfeed");
+  // Former names (Match Feed, then Meme Video, then Multiverse Video) must not come back
+  // into the shell or any other user-visible string source.
+  const OLD_NAMES = /Match Feed|Meme Video|memevideo|meme-video|Multiverse Video|multiversevideo/i;
+  assert.ok(!OLD_NAMES.test(html));
+  for (const rel of [
+    "../src/brand.json",
+    "../src/app.ts",
+    "../src/lib/recipes.ts",
+    "../src/lib/telemetry/feedback.ts",
+    "../public/.well-known/security.txt",
+    "../../mobile/brand.json",
+    "../../mobile/android/app/src/main/res/values/strings.xml",
+    "../../mobile/ios/App/App/Info.plist",
+    "../../desktop/src-tauri/tauri.conf.json",
+    "../../../packages/core/src/recipe.ts",
+  ]) {
+    assert.ok(!OLD_NAMES.test(readFileSync(new URL(rel, import.meta.url), "utf8")), `${rel} has a former product name`);
+  }
   const build = readFileSync(new URL("../scripts/build.mjs", import.meta.url), "utf8");
   assert.ok(build.includes("`<title>${escHtml(brand.name)}</title>`"));
   // Internal identifiers are deliberately unchanged, so existing data keeps working.

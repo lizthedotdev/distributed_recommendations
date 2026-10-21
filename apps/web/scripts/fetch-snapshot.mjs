@@ -90,7 +90,7 @@ async function exampleList(origin, file, name, description) {
   const list = {
     v: 1,
     name,
-    author: "Multiverse Video example data (not a real curator)",
+    author: "Folkfeed example data (not a real curator)",
     description,
     updatedAt: Math.floor(Date.now() / 1000),
     items: items.map((v) => ({ id: v.url })),

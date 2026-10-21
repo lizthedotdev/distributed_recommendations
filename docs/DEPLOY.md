@@ -1,6 +1,6 @@
 # Deploying
 
-How the app (**Multiverse Video**, set once as the `APP_NAME` repository
+How the app (**Folkfeed**, set once as the `APP_NAME` repository
 variable for the workflows and once in `infra/relay/.env` for the relay) is built,
 checked, attested and published, and the exact settings the repository owner has to
 create. Nothing deploys until the owner opts in.
@@ -65,7 +65,7 @@ Create the repository variable (*Settings, Secrets and variables, Actions, Varia
 | Variable | Value |
 |---|---|
 | `WEB_DEPLOY_ENABLED` | `true`. While unset, every job in `deploy-web.yml` is skipped |
-| `APP_NAME` | optional, defaults to `Multiverse Video`. Used in job summaries and pin names |
+| `APP_NAME` | optional, defaults to `Folkfeed`. Used in job summaries and pin names |
 
 With only this set, a run builds, tests, checks reproducibility, and uploads the
 `web-dist` artifact (the `dist/` folder) and `web-release` (deterministic

@@ -1,7 +1,7 @@
 import UIKit
 import UniformTypeIdentifiers
 
-/// "Share to Multiverse Video" for iOS. Add as a Share Extension target in Xcode (see
+/// "Share to Folkfeed" for iOS. Add as a Share Extension target in Xcode (see
 /// apps/mobile/README.md, "iOS share extension"). It accepts one URL or plain text, writes it
 /// to the App Group that @capgo/capacitor-share-target reads (key "share-target-data"), and
 /// closes. The plugin delivers it to the web app the next time the app becomes active.
@@ -40,7 +40,7 @@ final class ShareViewController: UIViewController {
             defaults.set(["title": String(title.prefix(200)), "texts": texts, "files": []], forKey: "share-target-data")
         }
         await MainActor.run {
-            let done = UIAlertController(title: nil, message: texts.isEmpty ? "Nothing to share" : "Saved. Open Multiverse Video to see it.", preferredStyle: .alert)
+            let done = UIAlertController(title: nil, message: texts.isEmpty ? "Nothing to share" : "Saved. Open Folkfeed to see it.", preferredStyle: .alert)
             present(done, animated: true)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
                 self?.extensionContext?.completeRequest(returningItems: nil)

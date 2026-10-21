@@ -1,7 +1,7 @@
 // Wire schemas for the Match protocol's control messages (rumor `content`).
 // Sketches use core's format unchanged (`encodeSketch` / `decodeSketch`).
 //
-// Rules, as for every Multiverse Video format (docs/PROTOCOL.md, Conventions):
+// Rules, as for every Folkfeed format (docs/PROTOCOL.md, Conventions):
 // - UTF-8 JSON, `v: 1`, keys in a fixed order, unknown keys rejected.
 // - Size checked before `JSON.parse`.
 // - Every control message is padded to exactly CONTROL_MESSAGE_BYTES (8,192), the

@@ -1,4 +1,4 @@
-"""Synthetic world for the Multiverse Video simulations.
+"""Synthetic world for the Folkfeed simulations.
 
 Everything here is synthetic. The generative model is deliberately simple and is
 documented in docs/SIMULATION_RESULTS.md ("World model"). Nothing in this file is

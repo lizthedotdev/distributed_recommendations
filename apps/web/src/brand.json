@@ -1,7 +1,10 @@
 {
-  "$comment": "The one place apps/web takes its display name from: header, page titles, the manifest, the artifact title and every UI string (src/brand.ts). Keep in step with apps/mobile/brand.json. Storage keys (mf.v1.*) and the IndexedDB name (match-feed) are internal and deliberately not derived from this.",
-  "name": "Multiverse Video",
-  "shortName": "Multiverse Video",
+  "$comment": "The one place apps/web takes its display name from: header, page titles, the manifest, the artifact title and every UI string (src/brand.ts). Studio brand: Folkfork Studios, a brand of The Multiverse School (the legal publisher). Keep in step with apps/mobile/brand.json. Storage keys (mf.v1.*) and the IndexedDB name (match-feed) are internal and deliberately not derived from this.",
+  "name": "Folkfeed",
+  "shortName": "Folkfeed",
+  "tagline": "Video that spreads through people.",
+  "studio": "Folkfork Studios",
+  "publisher": "The Multiverse School",
   "description": "Federated video, ranked on your device by a recipe you control.",
   "themeColor": "#7046c9",
   "themeColorDark": "#12141c",

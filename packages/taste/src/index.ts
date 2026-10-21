@@ -1,4 +1,4 @@
-// @match-feed/taste: publish a creator's public picks for Multiverse Video's Follow taste.
+// @match-feed/taste: publish a creator's public picks for Folkfeed's Follow taste.
 // Browser-safe entry point; Node signers (env key, bunker) are in './node-signers.ts'.
 
 export type { Pick, PicksSet, VideoRef } from './types.ts';

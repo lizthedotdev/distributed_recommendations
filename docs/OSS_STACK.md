@@ -1,4 +1,4 @@
-# Multiverse Video: open-source stack
+# Folkfeed: open-source stack
 
 Status: draft v1, 2026-10-19. Companion to `DESIGN.md` and `THREAT_MODEL.md`.
 

@@ -1510,12 +1510,14 @@
 
   // brand.json
   var brand_default = {
-    $comment: "The one place the product name and ids live. apps/mobile and apps/desktop both read this file (scripts/apply-brand.mjs, capacitor.config.ts, apps/desktop/scripts/sync-web.mjs). Name decided 2026-10-21 (docs/NAMING.md); the id matches the publisher's domain (themultiverse.school). See docs/SHIPPING.md, Decisions.",
-    displayName: "Multiverse Video",
-    shortName: "Multiverse Video",
+    $comment: "The one place the product name and ids live. apps/mobile and apps/desktop both read this file (scripts/apply-brand.mjs, capacitor.config.ts, apps/desktop/scripts/sync-web.mjs). Name decided 2026-10-21 (docs/NAMING.md): Folkfeed, by Folkfork Studios, a brand of The Multiverse School (the legal publisher, below); the id matches the publisher's domain (themultiverse.school). See docs/SHIPPING.md, Decisions.",
+    displayName: "Folkfeed",
+    shortName: "Folkfeed",
     appId: "school.themultiverse.video",
     publisher: "The Multiverse School",
-    customUrlScheme: "multiversevideo"
+    studio: "Folkfork Studios",
+    tagline: "Video that spreads through people.",
+    customUrlScheme: "folkfeed"
   };
 
   // bridge/links.ts

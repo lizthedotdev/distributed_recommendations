@@ -1,4 +1,4 @@
-# Multiverse Video: simulation results
+# Folkfeed: simulation results
 
 Status: first pass, 2026-10-19. Harness: `sim/` (see `sim/README.md`). Every number below
 comes from `python3 -m sim.run --all` (seed 0 base; Python 3.13, numpy 2.5). The full tables
