@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Multiverse Video",
-  "short_name": "Multiverse Video",
+  "name": "Folkfeed",
+  "short_name": "Folkfeed",
   "description": "Federated video, ranked on your device by a recipe you control.",
   "lang": "en",
   "dir": "ltr",

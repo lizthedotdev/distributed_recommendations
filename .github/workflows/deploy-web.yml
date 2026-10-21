@@ -30,7 +30,7 @@ concurrency:
 
 env:
   # The app's working name, in one place. Override with the APP_NAME repository variable.
-  APP_NAME: ${{ vars.APP_NAME || 'Multiverse Video' }}
+  APP_NAME: ${{ vars.APP_NAME || 'Folkfeed' }}
   NODE_VERSION: "22.22.0"
   npm_config_audit: "false"
   npm_config_fund: "false"

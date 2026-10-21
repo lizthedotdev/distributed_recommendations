@@ -1,6 +1,6 @@
-# Multiverse Video web client
+# Folkfeed web client
 
-**Multiverse Video** (display name, from one constant in [`src/brand.json`](src/brand.json)) is the web client and PWA: Follow, Subscribe to taste, explore slots,
+**Folkfeed** (display name, from one constant in [`src/brand.json`](src/brand.json)) is the web client and PWA: Follow, Subscribe to taste, explore slots,
 recipes, a vertical **Reels** feed, 1:1 **Match** with PSI previews (prototype), on-device **moderation**
 (report, block/mute, labelers, NSFW policy), **Publish my picks** for creators, first-run onboarding, and the
 hooks the native shells (apps/mobile, apps/desktop) call. It reads real PeerTube instances from the browser and ranks on the device

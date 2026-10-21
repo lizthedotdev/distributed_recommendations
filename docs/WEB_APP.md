@@ -1,6 +1,6 @@
 # Web client (v1)
 
-Status: working client with Reels, a feed settings sheet and Match (prototype); production pass (name, PWA, moderation, native hooks, pick-dated taste, Publish my picks, onboarding, accessibility, Tier 2 discovery stats, private relay) on 2026-10-19. Code: `apps/web/` (see its README for how to run it). Display name **Multiverse Video** (one constant: `apps/web/src/brand.json`; decided 2026-10-21, NAMING.md).
+Status: working client with Reels, a feed settings sheet and Match (prototype); production pass (name, PWA, moderation, native hooks, pick-dated taste, Publish my picks, onboarding, accessibility, Tier 2 discovery stats, private relay) on 2026-10-19. Code: `apps/web/` (see its README for how to run it). Display name **Folkfeed** (one constant: `apps/web/src/brand.json`; decided 2026-10-21, NAMING.md).
 Companion to `DESIGN.md`, `PROTOCOL.md` and `ANALYTICS.md`. Where this document and the code disagree, that is a bug.
 
 ## Scope
@@ -279,7 +279,7 @@ The artifact can't reach relays, so Match runs against match's `InMemoryRelay` i
 
 ## Name
 
-The display name lives in one file, `apps/web/src/brand.json` (`name`, `shortName`, `description`, theme colors), kept in step with `apps/mobile/brand.json`. `scripts/build.mjs` fills `index.html` (`__APP_NAME__` placeholders), writes `manifest.webmanifest` and the artifact `<title>` from it; `src/brand.ts` gives the UI the same constant (header, unlock screen, notifications, onboarding). Internal identifiers are deliberately unchanged, so existing data keeps working without a migration: localStorage keys `mf.v1.*`, the IndexedDB database `match-feed`, the vault's AAD strings, the service worker's cache prefix `mf-shell-`, and protocol namespaces such as `match-feed/discovery-task/v1`. Built-in recipe authors say "Multiverse Video".
+The display name lives in one file, `apps/web/src/brand.json` (`name`, `shortName`, `description`, theme colors), kept in step with `apps/mobile/brand.json`. `scripts/build.mjs` fills `index.html` (`__APP_NAME__` placeholders), writes `manifest.webmanifest` and the artifact `<title>` from it; `src/brand.ts` gives the UI the same constant (header, unlock screen, notifications, onboarding). Internal identifiers are deliberately unchanged, so existing data keeps working without a migration: localStorage keys `mf.v1.*`, the IndexedDB database `match-feed`, the vault's AAD strings, the service worker's cache prefix `mf-shell-`, and protocol namespaces such as `match-feed/discovery-task/v1`. Built-in recipe authors say "Folkfeed".
 
 ## PWA: service worker, install, offline
 
@@ -306,7 +306,7 @@ Every hook in apps/mobile README "Hooks apps/web needs to implement" (contract `
 2. Vault key in the OS keystore (above, Encryption at rest).
 3. Match identity secret in the keystore (`nostr-secret-key`); the vault keeps the pubkey; removing the identity removes the secret; older vault copies move on start.
 4. Incoming deep links and shares: `nostr:npub/nprofile` (decoded and checksummed here) opens a confirmation, then the match consent sheet; a PeerTube watch URL opens a confirmation that names the host (and says it isn't a catalog instance, which would see the IP) before resolving it. The PWA share target uses the same dialog.
-5. Notifications, opt-in (Settings → App): the permission prompt only from that switch; generic lock-screen text ("New match request" / "Open Multiverse Video to review it."), stable 31-bit ids per event, only while the app isn't visible; tapping routes to Matches.
+5. Notifications, opt-in (Settings → App): the permission prompt only from that switch; generic lock-screen text ("New match request" / "Open Folkfeed to review it."), stable 31-bit ids per event, only while the app isn't visible; tapping routes to Matches.
 6. Background checks, opt-in: `background.enable` runs a relay check and due sketches within ~20 s; unavailable in passphrase mode; the switch says relays then see check-ins at OS-chosen times.
 7. Labels: the storage panel names the keystore.
 8. Product name from one constant (above).

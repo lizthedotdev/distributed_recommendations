@@ -1111,6 +1111,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "77ce24cb58228fbb8aa041425bb1050850ac19177686ea6e0f41a70416f56fdb"
 
 [[package]]
+name = "folkfeed-desktop"
+version = "0.1.0"
+dependencies = [
+ "apple-native-keyring-store",
+ "keyring-core",
+ "serde",
+ "tauri",
+ "tauri-build",
+ "windows-native-keyring-store",
+ "zbus-secret-service-keyring-store",
+]
+
+[[package]]
 name = "foreign-types"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2204,19 +2217,6 @@ dependencies = [
  "serde",
  "thiserror 2.0.21",
  "windows-sys 0.61.2",
-]
-
-[[package]]
-name = "multiverse-video-desktop"
-version = "0.1.0"
-dependencies = [
- "apple-native-keyring-store",
- "keyring-core",
- "serde",
- "tauri",
- "tauri-build",
- "windows-native-keyring-store",
- "zbus-secret-service-keyring-store",
 ]
 
 [[package]]

@@ -1,4 +1,4 @@
-# Multiverse Video: threat model and security plan
+# Folkfeed: threat model and security plan
 
 Status: draft v3, 2026-10-19. v2 added the simulation evidence (`docs/SIMULATION_RESULTS.md`),
 marked which mitigations exist in code, and added threats T19–T23 surfaced while building.

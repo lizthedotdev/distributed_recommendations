@@ -1,8 +1,47 @@
 # Naming research
 
-Status: research notes, 2026-10-19; decision added 2026-10-21. Publisher: The Multiverse School.
+Status: research notes, 2026-10-19; decisions added 2026-10-21. Publisher: The Multiverse School.
 
-## Decision (2026-10-21): Multiverse Video
+## Decision (2026-10-21): Folkfeed (app), Folkfork Studios (studio)
+
+The owner chose **Folkfeed** (spelled exactly so: capital F, lowercase f) as the product
+name, replacing "Multiverse Video" (below, now superseded). The studio and publisher brand
+is **Folkfork Studios**, a brand of The Multiverse School; **The Multiverse School stays the
+legal publisher**. Tagline: "Video that spreads through people."
+
+Unchanged on purpose: the app/bundle id `school.themultiverse.video` (brand-neutral, from
+the publisher's domain), storage keys `mf.v1.*`, the `match-feed` IndexedDB name, npm
+scopes, `window.MatchFeedNative` and the protocol namespaces. The URL scheme is now
+`folkfeed`.
+
+Findings before the decision (2026-10-21):
+
+- **folkfeed.com is a live site** for a community social app, "FolkFeed — Find your
+  people, communities and events". It is a waitlist page that claims a 10,000-person
+  waitlist and says the iOS and Android apps are "coming soon". The domain was registered
+  2025-08-13, expires 2028-08-13 and is transfer-locked.
+- **USPTO:** no record for FOLKFEED was found in a web search. A web search is not a
+  register search; an unfiled or pending mark, or common-law use, may still exist.
+- **folkfeed.app** is in redemption / pending delete (registered 2025-08-13).
+- folkfeed.tv, .org, .social and .co look unregistered (no record found; not proof).
+- **Folkfork:** no studio or game by that name was found. folkfork.com is registered
+  (2025-07-16) and serves an empty site. folkfork.games, folkfork.io and
+  folkforkstudios.com look unregistered.
+
+The FolkFeed waitlist app is a near-identical name in a neighbouring space (social
+discovery apps, both headed for the app stores). **The owner chose to proceed with
+Folkfeed anyway.**
+
+Recommendations:
+
+- Get an attorney knockout search before the first store listing or public launch.
+- Consider filing a US intent-to-use application promptly, for priority.
+- Backorder folkfeed.app.
+- Watch FolkFeed's launch (store listings, any trademark filing).
+
+## Decision (2026-10-21): Multiverse Video (superseded)
+
+**Superseded the same day by Folkfeed (above).** Kept as it was for the record.
 
 The owner chose **Multiverse Video** as the product name, replacing the working name
 "Meme Video" (and the earlier repo name "Match Feed"). App/bundle id:

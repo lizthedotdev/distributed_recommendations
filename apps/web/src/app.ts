@@ -69,7 +69,7 @@ import type { Diagnostics, FeedbackInput } from "./lib/telemetry/feedback.ts";
 import { sendFeedback } from "./lib/telemetry/feedback.ts";
 import { createErrorLog, deviceFacts } from "./lib/telemetry/diagnostics.ts";
 import type { Route } from "./lib/telemetry/scrub.ts";
-import { APP_NAME } from "./brand.ts";
+import { APP_NAME, APP_TAGLINE } from "./brand.ts";
 import type { MatchFeedNative } from "./lib/native.ts";
 import { matchNotice, notificationId } from "./lib/native.ts";
 import type { IncomingAction } from "./lib/incoming.ts";
@@ -541,7 +541,7 @@ export function startApp(opts: AppOptions): App {
   const header = h(
     "header",
     { class: "topbar" },
-    h("div", { class: "brand" }, h("h1", null, APP_NAME), h("p", { class: "muted small tagline" }, "Federated video, ranked on this device by a recipe you control.")),
+    h("div", { class: "brand" }, h("h1", null, APP_NAME), h("p", { class: "muted small tagline" }, APP_TAGLINE)),
     tabs,
     h("div", { class: "topactions" }, gear, h("div", { class: "menuwrap" }, menuBtn, menu)),
   );

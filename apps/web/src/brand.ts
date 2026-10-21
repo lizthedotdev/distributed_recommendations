@@ -7,3 +7,6 @@ import brand from "./brand.json" with { type: "json" };
 export const APP_NAME: string = brand.name;
 export const APP_SHORT_NAME: string = brand.shortName;
 export const APP_DESCRIPTION: string = brand.description;
+export const APP_TAGLINE: string = brand.tagline;
+export const APP_STUDIO: string = brand.studio;
+export const APP_PUBLISHER: string = brand.publisher;

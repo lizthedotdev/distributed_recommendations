@@ -1,7 +1,7 @@
 {
   "name": "@match-feed/match",
   "version": "0.1.0",
-  "description": "Private Match protocol for Multiverse Video: match lifecycle, NIP-17 gift-wrapped sketch exchange, per-match keys and PSI-cardinality previews",
+  "description": "Private Match protocol for Folkfeed: match lifecycle, NIP-17 gift-wrapped sketch exchange, per-match keys and PSI-cardinality previews",
   "license": "Apache-2.0",
   "type": "module",
   "private": true,

@@ -1,7 +1,7 @@
 {
   "name": "@match-feed/taste",
   "version": "0.1.0",
-  "description": "Publish a creator's public video picks for Multiverse Video's Follow taste: NIP-51 video curation sets (kind 30005) over bridged NIP-71 videos, and taste-list v1 JSON. Parsers and validators for both.",
+  "description": "Publish a creator's public video picks for Folkfeed's Follow taste: NIP-51 video curation sets (kind 30005) over bridged NIP-71 videos, and taste-list v1 JSON. Parsers and validators for both.",
   "license": "Apache-2.0",
   "type": "module",
   "private": true,

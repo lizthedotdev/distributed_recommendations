@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "Multiverse Video",
+  "productName": "Folkfeed",
   "version": "0.1.0",
   "identifier": "school.themultiverse.video",
   "build": {
@@ -42,7 +42,7 @@
     "publisher": "The Multiverse School",
     "license": "Apache-2.0",
     "category": "Video",
-    "shortDescription": "Federated video, ranked on your device",
+    "shortDescription": "Video that spreads through people.",
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

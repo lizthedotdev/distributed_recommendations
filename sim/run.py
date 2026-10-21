@@ -23,7 +23,7 @@ from .world import QUICK, WorldConfig
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description="Multiverse Video simulation harness")
+    ap = argparse.ArgumentParser(description="Folkfeed simulation harness")
     ap.add_argument("--exp", type=int, nargs="*", default=[], help="experiments to run (1-5)")
     ap.add_argument("--all", action="store_true", help="run all experiments")
     ap.add_argument("--quick", action="store_true", help="tiny world for smoke tests")

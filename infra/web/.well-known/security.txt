@@ -1,4 +1,4 @@
-# security.txt (RFC 9116) for the web client. TEMPLATE: not yet served.
+# security.txt (RFC 9116) for the Folkfeed web client. TEMPLATE: not yet served.
 # Before publishing:
 #   1. Replace security@example.org with The Multiverse School's security inbox
 #      (the same address as in SECURITY.md).

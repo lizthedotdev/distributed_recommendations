@@ -1,6 +1,6 @@
 # @match-feed/core
 
-The on-device library for Multiverse Video: ranking, explanations, taste sketches and the
+The on-device library for Folkfeed: ranking, explanations, taste sketches and the
 privacy policies around matches, circles and previews. Design: `docs/DESIGN.md`,
 threats: `docs/THREAT_MODEL.md`, wire formats: `docs/PROTOCOL.md`.
 

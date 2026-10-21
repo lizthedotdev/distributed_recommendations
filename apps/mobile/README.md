@@ -1,9 +1,9 @@
-# Multiverse Video for Android and iOS (Capacitor)
+# Folkfeed for Android and iOS (Capacitor)
 
-The Multiverse Video web client (`apps/web`) wrapped as native Android and iOS apps with
+The Folkfeed web client (`apps/web`) wrapped as native Android and iOS apps with
 [Capacitor](https://capacitorjs.com) 8. The product name, app id and URL scheme live in one file,
-[`brand.json`](brand.json) (display name **Multiverse Video**, id `school.themultiverse.video`,
-publisher The Multiverse School). Name decided 2026-10-21; trademark clearance by an attorney is still recommended (docs/NAMING.md, docs/SHIPPING.md).
+[`brand.json`](brand.json) (display name **Folkfeed**, id `school.themultiverse.video`,
+URL scheme `folkfeed`, studio Folkfork Studios, publisher The Multiverse School). Name decided 2026-10-21; an attorney knockout search is still recommended (docs/NAMING.md, docs/SHIPPING.md).
 
 The web app is not forked: `npm run sync` copies `apps/web/dist` into `www/`, adds a small bridge
 script that defines `window.MatchFeedNative`, and syncs it into the native projects. This
@@ -140,7 +140,7 @@ None of this is done; apps/web is being edited by someone else. In order of valu
 4. **Incoming links and shares.** After the vault is open (after any passphrase prompt), call `native.incoming?.onIncoming(item => …)` once:
    - `kind: "nostr"`: decode `item.value` with `src/lib/bech32.ts` (it is only shape-checked natively; `nprofile` needs TLV decoding to get the pubkey), then open Matches > Request a match with it filled in. Never act without the user confirming.
    - `kind: "peertube-watch"`: `item.host` + `item.videoId`. Ask before contacting a host that isn't already a catalog instance (the request reveals the user's IP to it), then resolve with core's `getVideo` and open the watch overlay, or offer "Follow channel".
-5. **Notifications (opt-in, off by default).** A switch in Matches or Sharing & privacy. On turning it on, call `requestPermission()` from that tap. After a relay check that finds a new request or accept, `notify({ id, title: "New match request", body: "Open Multiverse Video to review it.", route: "matches" })`, with no petname, npub or video in the text (lock screen). `id`: a stable 31-bit number per event so repeats replace each other. `onOpen(route)` navigates.
+5. **Notifications (opt-in, off by default).** A switch in Matches or Sharing & privacy. On turning it on, call `requestPermission()` from that tap. After a relay check that finds a new request or accept, `notify({ id, title: "New match request", body: "Open Folkfeed to review it.", route: "matches" })`, with no petname, npub or video in the text (lock screen). `id`: a stable 31-bit number per event so repeats replace each other. `onOpen(route)` navigates.
 6. **Background checks (opt-in, off by default).** A switch "Check for match messages in the background". `background.enable(async () => { await service.check(); })`, where the check runs without UI: open the vault (device mode only; disable the switch in passphrase mode, since there's nobody to type it), fetch from relays, `sendDueSketches`, persist the MatchBook, maybe `notify`. Must finish in about 25 s. Tell the user plainly that relays then see check-ins at times the OS picks, not only while the app is open (T5).
 7. **Labels.** Use `native.platform` in the storage panel ("Key stored in Android Keystore" / "iOS Keychain" / "OS keychain").
 8. **Product name in the UI.** Done: apps/web reads the name from `apps/web/src/brand.json` (`src/brand.ts`), kept in step with `brand.json` here.
@@ -179,7 +179,7 @@ the vault works as in a browser.
 | Input | Android | iOS |
 |---|---|---|
 | `nostr:npub1…`, `nostr:nprofile1…` (NIP-21) | intent filter `nostr:` (other Nostr apps register it too; Android shows a chooser) | `CFBundleURLSchemes` `nostr` (iOS picks one app if several claim it) |
-| PeerTube watch URL (`/w/<id>`, `/videos/watch/<id>`) | share sheet ("Share to Multiverse Video", `text/plain`) | share extension (URL or text) |
+| PeerTube watch URL (`/w/<id>`, `/videos/watch/<id>`) | share sheet ("Share to Folkfeed", `text/plain`) | share extension (URL or text) |
 | PeerTube URL opened directly | not possible on arbitrary hosts: verified App Links / Universal Links need a file on each host. A future `https://<our domain>/open?…` link can be verified (commented template in the manifest) | same, with `apple-app-site-association` |
 
 `bridge/links.ts` only pattern-matches: `nsec` and other entities are refused, URLs must be https
