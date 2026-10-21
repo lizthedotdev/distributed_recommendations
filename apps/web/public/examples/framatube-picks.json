@@ -1,7 +1,7 @@
 {
   "v": 1,
   "name": "Example: Framatube recent standouts",
-  "author": "Match Feed example data (not a real curator)",
+  "author": "Multiverse Video example data (not a real curator)",
   "description": "Example data, generated automatically: the most-viewed of framatube.org's 100 newest local videos, one per channel. Not curated by a person.",
   "updatedAt": 1792437380,
   "items": [

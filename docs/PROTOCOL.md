@@ -1,4 +1,4 @@
-# Match Feed: wire formats and protocol
+# Multiverse Video: wire formats and protocol
 
 Status: draft v1, 2026-10-19, revised the same day to apply `SIMULATION_RESULTS.md`, and again to record the Circles prototype (§3, kinds 3480–3482; `CIRCLES.md`). Companion to `DESIGN.md` and `THREAT_MODEL.md`.
 The reference implementation is `packages/core` (TypeScript, no dependencies).
@@ -74,7 +74,7 @@ Every ranked item carries `why` lines (THREAT_MODEL principle 3). Second-degree 
 {
   "version": 1,
   "name": "Following + matches",
-  "author": "Match Feed",
+  "author": "Multiverse Video",
   "weights": { "follow": 4, "taste": 0.9, "match": 6, "circle": 6, "second": 6, "explore": 1 },
   "recencyHalfLifeDays": 14,
   "exploreShare": 0.05,

@@ -1,6 +1,6 @@
 # @match-feed/match: the private Match protocol
 
-The 1:1 Match layer of Match Feed: the match lifecycle, NIP-17-style gift-wrapped
+The 1:1 Match layer of Multiverse Video: the match lifecycle, NIP-17-style gift-wrapped
 messages, per-match keys, PSI-cardinality previews and sketch exchange. It runs the
 policies from `@match-feed/core` (sketches, preview budget and noise, similarity,
 ranking) over Nostr.

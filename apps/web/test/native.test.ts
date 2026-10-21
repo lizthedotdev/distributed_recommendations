@@ -45,8 +45,8 @@ test("notifications: stable 31-bit ids, generic lock-screen text", () => {
   assert.equal(a, notificationId("request:abc"));
   assert.notEqual(a, notificationId("request:abd"));
   assert.ok(a >= 0 && a < 2 ** 31);
-  const n = matchNotice("request", "Meme Video");
-  assert.deepEqual(n, { title: "New match request", body: "Open Meme Video to review it.", route: "matches" });
+  const n = matchNotice("request", "Multiverse Video");
+  assert.deepEqual(n, { title: "New match request", body: "Open Multiverse Video to review it.", route: "matches" });
 });
 
 test("vault key in the native keystore: no key in IndexedDB, survives reopen", async () => {

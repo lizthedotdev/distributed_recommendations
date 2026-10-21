@@ -1,7 +1,7 @@
 # @match-feed/bridge: PeerTube → Nostr NIP-71
 
 Publishes PeerTube videos as Nostr video events ([NIP-71]), so Nostr clients and
-Match Feed can refer to a PeerTube video through a signed, stable event. We found
+Multiverse Video can refer to a PeerTube video through a signed, stable event. We found
 no existing PeerTube→NIP-71 bridge (see `docs/OSS_STACK.md` §2).
 
 - **Library:** `toVideoEvent(ptVideo, opts)` builds an unsigned NIP-71 event.

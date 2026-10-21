@@ -1,7 +1,7 @@
 {
   "name": "@match-feed/bridge",
   "version": "0.1.0",
-  "description": "PeerTube -> Nostr NIP-71 video event bridge for Match Feed",
+  "description": "PeerTube -> Nostr NIP-71 video event bridge for Multiverse Video",
   "license": "Apache-2.0",
   "type": "module",
   "private": true,

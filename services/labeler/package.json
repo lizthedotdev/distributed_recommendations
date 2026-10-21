@@ -1,7 +1,7 @@
 {
   "name": "@match-feed/labeler",
   "version": "0.1.0",
-  "description": "Moderation labeler for Match Feed: NIP-56 report intake, human review queue, NIP-32 labels with NIP-09 retraction, and an audit log for transparency reports",
+  "description": "Moderation labeler for Multiverse Video: NIP-56 report intake, human review queue, NIP-32 labels with NIP-09 retraction, and an audit log for transparency reports",
   "license": "Apache-2.0",
   "type": "module",
   "private": true,

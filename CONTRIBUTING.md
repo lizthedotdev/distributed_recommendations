@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping. This project (working name Meme Video; code name Match Feed) is
+Thanks for helping. This project (Multiverse Video) is
 published by The Multiverse School. Start with [`README.md`](README.md) for the layout
 and how to run each part, and [`docs/DESIGN.md`](docs/DESIGN.md) and
 [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md) for why things are the way they are.

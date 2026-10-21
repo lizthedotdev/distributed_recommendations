@@ -1,7 +1,8 @@
 // Writes brand.json (display name, app id, URL scheme) into the native projects, so renaming the
 // product is: edit brand.json, run `npm run apply-brand`, rebuild. The app id is also the Android
 // applicationId/namespace and the iOS bundle id; changing it after a store release creates a
-// new, separate app listing. The Java package directory (school/multiverse/...) is not moved.
+// new, separate app listing. The Java package directory (android/app/src/main/java/<appId as path>)
+// and its `package` line are not moved by this script; move them by hand when the id changes.
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -33,7 +34,7 @@ edit("ios/App/App/Info.plist", (s) =>
   s
     .replace(/(<key>CFBundleDisplayName<\/key>\s*<string>)[^<]*(<\/string>)/, `$1${brand.displayName}$2`)
     .replace(/(<key>MVCustomURLScheme<\/key>\s*<string>)[^<]*(<\/string>)/, `$1${brand.customUrlScheme}$2`)
-    .replace(/(<string>__CUSTOM_SCHEME__<\/string>|<string>memevideo<\/string>)/, `<string>${brand.customUrlScheme}</string>`),
+    .replace(/(<string>app-share-handoff<\/string>\s*<key>CFBundleURLSchemes<\/key>\s*<array>\s*<string>)[^<]*(<\/string>)/, `$1${brand.customUrlScheme}$2`),
 );
 edit("ios/App/App.xcodeproj/project.pbxproj", (s) => s.replace(/PRODUCT_BUNDLE_IDENTIFIER = [^;]+;/g, (m) => (m.includes(".ShareExtension") ? `PRODUCT_BUNDLE_IDENTIFIER = ${brand.appId}.ShareExtension;` : `PRODUCT_BUNDLE_IDENTIFIER = ${brand.appId};`)));
 edit("ios-share-extension/ShareViewController.swift", (s) =>

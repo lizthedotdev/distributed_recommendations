@@ -11,9 +11,9 @@ Store-policy claims were checked against the official pages on 2026-10-19 and ar
 
 | Decision | Value | Status |
 |---|---|---|
-| Product name | **Meme Video** (display name) | **Name-conflict and trademark check pending.** "MemeCore" was dropped because it collides with an existing crypto L1. The screen in [`NAMING.md`](NAMING.md) rates "Meme Video" **high risk** (likely descriptive or generic for a video app, prior MEME marks covering video software, memecoin associations). The name lives only in `apps/mobile/brand.json`; `npm run apply-brand` in apps/mobile writes it into the Android, iOS and desktop projects. Text inside the web app still says "Match Feed" (a hook for apps/web) |
+| Product name | **Multiverse Video** (display name) | **Decided 2026-10-21** (replaces the working names "Meme Video" and "Match Feed"). USPTO TSDR shows a live registration for ONE MORE MULTIVERSE (Multiverse, Inc.) covering streaming of audiovisual material, and "Multiverse" is a crowded term (see [`NAMING.md`](NAMING.md), Decision). **Attorney clearance recommended before the first store listing**; the house brand The Multiverse School helps. The name lives in `apps/mobile/brand.json` and `apps/web/src/brand.json`; `npm run apply-brand` in apps/mobile writes it into the Android, iOS and desktop projects |
 | Publisher | The Multiverse School | Needs to be a legal entity for organization store accounts (see Decisions) |
-| App id / bundle id | `school.multiverse.memevideo` | Reverse-DNS ids should match a domain the publisher controls (here `multiverse.school`). **Confirm with the owner** before the first store upload: after release, the id can't change without creating a new listing |
+| App id / bundle id | `school.themultiverse.video` | **Decided 2026-10-21.** Reverse-DNS form of the publisher's domain `themultiverse.school`. Used for the Android `applicationId`/namespace, the iOS bundle id (share extension `school.themultiverse.video.ShareExtension`, App Group `group.school.themultiverse.video`) and the Tauri `identifier`. After the first store release the id can't change without creating a new listing |
 | Platform order | Web/PWA first, then **Android**, then iOS, then desktop | Decided |
 | Hosting | Static host plus an IPFS mirror | Decided; provider still to choose (Phase 1) |
 
@@ -171,7 +171,7 @@ Per [developer.android.com/developer-verification](https://developer.android.com
 - A power-user "advanced flow" for unverified apps is planned. How ADB installs are treated isn't stated on that page.
 - F-Droid opposes the program ([open letter, Feb 2026](https://f-droid.org/2026/02/24/open-letter-opposing-developer-verification.html)).
 
-- [ ] Register `school.multiverse.memevideo` and our signing key once the account exists, so direct-APK and F-Droid builds (signed with our key; see below) install on certified devices in 2027.
+- [ ] Register `school.themultiverse.video` and our signing key once the account exists, so direct-APK and F-Droid builds (signed with our key; see below) install on certified devices in 2027.
 
 ### F-Droid
 
@@ -250,7 +250,7 @@ Rough recurring costs: Apple 99 USD/yr (or waived); Windows signing (see above);
 
 | Decision | Options | Tradeoffs | Recommendation |
 |---|---|---|---|
-| **Name / brand** | Keep "Meme Video" after a conflict check; pick another | "Meme Video" is descriptive, so it is a weak trademark and hard to search for, and stores may treat it as generic. Check USPTO/EUIPO, both stores and domain availability before any public listing. Changing later is cheap only before store release (display name is one file; the app id isn't) | Run the check now; keep the id brand-neutral if the name may change (e.g. `school.multiverse.matchfeed`) |
+| **Name / brand** | **Decided 2026-10-21: Multiverse Video** | "Multiverse" is crowded in the USPTO register, and ONE MORE MULTIVERSE (Multiverse, Inc., live) covers video streaming. The publisher's house brand The Multiverse School supports the name. Changing later is cheap only before store release (display name is one file; the app id isn't) | Get attorney clearance (USPTO, state, common law, EUIPO, both stores) before any public listing; present it as "Multiverse Video by The Multiverse School" |
 | **Domain** | Org domain subpath; a new product domain | Needed for: the privacy policy URL, the Apple org website requirement (on the org's domain), App Links/Universal Links, DNSLink for the IPFS mirror, and it should match the app id | A product subdomain on the org domain now; a separate domain later if the brand sticks |
 | **Legal entity for store accounts** | The Multiverse School as an organization; an individual | Organization accounts need a legal entity plus D-U-N-S (both stores) and show the org as seller. Individuals show a personal legal name, and Play personal accounts need the 12-tester, 14-day closed test. Apple fee waiver only for nonprofit or accredited educational entities | Organization, if The Multiverse School is a legal entity; get the D-U-N-S number now (it can take up to 30 days) |
 | **Hosting provider** (static + IPFS decided) | Codeberg Pages, VPS + Caddy, Cloudflare/Netlify, GitHub Pages | Header control and log policy versus operational load and IP exposure to a CDN | VPS + Caddy with no logs, or Codeberg; IPFS via DNSLink |
