@@ -137,7 +137,7 @@ test("scrubber keeps messages that are useful and harmless", () => {
 });
 
 test("stack frames keep only the bundle file name; routes are allow-listed", () => {
-  assert.equal(scrubFrameFile("https://memevideo.example/app.js?v=3"), "app:///app.js");
+  assert.equal(scrubFrameFile("https://multiversevideo.example/app.js?v=3"), "app:///app.js");
   assert.equal(scrubFrameFile("http://127.0.0.1:8080/crash.js"), "app:///crash.js");
   assert.equal(scrubFrameFile("/home/alice/app/dist/app.js"), "app:///app.js");
   assert.equal(scrubFrameFile("chrome-extension://abc/inject.js"), "app:///<other>");
@@ -156,7 +156,7 @@ test("scrubEvent is an allow-list: request, user, IP, extra, SDK contexts and ot
     environment: "production",
     server_name: "alice-laptop",
     transaction: "https://framatube.org/w/kkGMgK9ZtnKfYAgnEtQxbv",
-    request: { url: "https://memevideo.example/?list=https://example.org/taste.json", headers: { Referer: "https://framatube.org/", "User-Agent": "Mozilla/5.0" } },
+    request: { url: "https://multiversevideo.example/?list=https://example.org/taste.json", headers: { Referer: "https://framatube.org/", "User-Agent": "Mozilla/5.0" } },
     user: { id: "npub1sg6plzptd64u62a878hep2kev88swjh3tw00gjsfl8f237lmu63q0uf63m", ip_address: "203.0.113.7", email: "a@b.example" },
     extra: { recipe: '{"weights":{"follow":1}}', title: "Cob oven build" },
     tags: { custom: "framatube.org" },
@@ -177,7 +177,7 @@ test("scrubEvent is an allow-list: request, user, IP, extra, SDK contexts and ot
           mechanism: { type: "onerror", handled: false, data: { url: "https://framatube.org" } },
           stacktrace: {
             frames: [
-              { filename: "https://memevideo.example/app.js?x=1", function: "loadInstance", lineno: 1, colno: 2345, vars: { title: "Cob oven build" }, context_line: "secret" },
+              { filename: "https://multiversevideo.example/app.js?x=1", function: "loadInstance", lineno: 1, colno: 2345, vars: { title: "Cob oven build" }, context_line: "secret" },
               { filename: "chrome-extension://abc/x.js", function: "inject", lineno: 3 },
               { filename: "/home/alice/dist/app.js", function: "<anonymous>", lineno: 9 },
             ],

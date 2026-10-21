@@ -1,7 +1,7 @@
 {
   "name": "@match-feed/core",
   "version": "0.1.0",
-  "description": "On-device ranking, taste sketches and privacy policy for Match Feed, a federated video app with user-controlled recommendations.",
+  "description": "On-device ranking, taste sketches and privacy policy for Multiverse Video, a federated video app with user-controlled recommendations.",
   "license": "Apache-2.0",
   "type": "module",
   "private": true,

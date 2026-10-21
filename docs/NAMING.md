@@ -1,6 +1,43 @@
 # Naming research
 
-Status: research notes, 2026-10-19. Publisher: The Multiverse School.
+Status: research notes, 2026-10-19; decision added 2026-10-21. Publisher: The Multiverse School.
+
+## Decision (2026-10-21): Multiverse Video
+
+The owner chose **Multiverse Video** as the product name, replacing the working name
+"Meme Video" (and the earlier repo name "Match Feed"). App/bundle id:
+`school.themultiverse.video`, from the publisher's domain `themultiverse.school`.
+"Multiverse Video" was not one of the candidates screened below; the rest of this
+document is the earlier screen, kept as it was.
+
+Trademark signals for MULTIVERSE, first found on Justia and then checked in USPTO TSDR
+(`tsdr.uspto.gov/statusview/sn<serial>`) and the USPTO trademark search API on 2026-10-21.
+TSDR corrected two of the four Justia-derived readings:
+
+| Mark | Owner | Serial / Reg. | Goods and services | TSDR status | Source |
+|---|---|---|---|---|---|
+| ONE MORE MULTIVERSE | Multiverse, Inc. (Delaware) | SN 90069423 / Reg. 6680395 | IC 038 streaming of audio, visual and audiovisual material and of video on the Internet; IC 041 online video games, displaying films; IC 042 | **Live, registered** (filed 2020-07-23, registered 2022-03-22). The closest conflict: streaming video | [Justia owner page](https://trademarks.justia.com/owners/multiverse-inc-704635/) |
+| MULTIVERSE FILMS | Ten Twenty Seven Films (Maryland partnership) | SN 97239687 | IC 041 video production services (intent to use) | **Dead.** Filed 2022-01-26; abandoned 2023-05-17 for no response to an Office action. Not a new or pending application | [Justia](https://trademark.justia.com/972/39/multiverse-97239687.html) |
+| "D" (stylized letter) | Multiverse Studios, LLC (Delaware) | SN 88747247 / Reg. 6101911 | IC 009 downloadable mobile apps for rating people and events related to dating | Live, registered (filed 2020-01-05, registered 2020-07-14). The mark is a letter "D", not MULTIVERSE; the overlap is the owner's name and the mobile-app class | [Justia owner page](https://trademarks.justia.com/owners/multiverse-studios-llc-4293670) |
+| MULTIVERSE | The Multiverse Network, Inc. | SN 77482606 / Reg. 3557207 | IC 041 online computer games and virtual worlds | **Dead.** Registered 2009-01-06; cancelled 2015-08-07 (no Section 8 declaration) | [Justia owner page](https://trademark.justia.com/owners/the-multiverse-network-inc-1535869) |
+
+Other live MULTIVERSE marks the USPTO search returned in nearby classes (not checked in
+TSDR one by one): Multiverse Computing, S.L. (IC 009/042, AI software), Multiverse Group
+Limited (UK apprenticeship platform; IC 035/041/042/045), Multiverse Entertainment LLC
+(SN 87612885, IC 041 augmented reality video production), Multiverse Labs Pte. Ltd. ("MV",
+IC 009/038 including transmission of videos) and Marvel Characters, Inc. (MULTIVERSE
+SAGA, IC 009/041). "Multiverse" is a crowded term, which narrows any one owner's scope but
+also means "Multiverse Video" would be a weak mark on its own.
+
+What helps: the publisher's house brand, **The Multiverse School**, already uses
+"Multiverse", and presenting the app as "Multiverse Video by The Multiverse School" ties the
+name to an existing source. The registered ONE MORE MULTIVERSE mark (streaming video) is the
+one to look at most closely.
+
+**Recommendation: get attorney clearance before the first store listing or public
+launch.** This table is a screen, not clearance: a full search covers state registrations,
+common-law use, EUIPO/UKIPO and the app stores, and only counsel can judge likelihood of
+confusion.
 
 This is a screen, not legal clearance. Web searches, app-store queries and RDAP lookups
 can show that a conflict **exists**. They cannot show that a name is **free**. Absence

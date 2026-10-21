@@ -17,10 +17,14 @@ const vid = (over: Record<string, unknown> = {}) =>
 
 test("brand: one constant drives index.html, the artifact title and the manifest", () => {
   const brand = JSON.parse(readFileSync(new URL("../src/brand.json", import.meta.url), "utf8"));
-  assert.equal(brand.name, "Meme Video");
+  assert.equal(brand.name, "Multiverse Video");
+  const mobile = JSON.parse(readFileSync(new URL("../../mobile/brand.json", import.meta.url), "utf8"));
+  assert.equal(mobile.displayName, brand.name, "apps/mobile/brand.json is kept in step");
+  assert.equal(mobile.appId, "school.themultiverse.video");
   const html = readFileSync(new URL("../public/index.html", import.meta.url), "utf8");
   assert.ok(html.includes("<title>__APP_NAME__</title>"));
-  assert.ok(!/Match Feed/.test(html));
+  // Former names (Match Feed, then Meme Video) must not come back into the shell.
+  assert.ok(!/Match Feed|Meme Video/.test(html));
   const build = readFileSync(new URL("../scripts/build.mjs", import.meta.url), "utf8");
   assert.ok(build.includes("`<title>${escHtml(brand.name)}</title>`"));
   // Internal identifiers are deliberately unchanged, so existing data keeps working.

@@ -1,7 +1,7 @@
 {
   "name": "@match-feed/circles",
   "version": "0.1.0",
-  "description": "PROTOTYPE Circles for Match Feed: group taste pooling over MLS (Marmot), pairwise-masked secure aggregation with distributed DP noise, and core's circle output policy. Not audited; not for production.",
+  "description": "PROTOTYPE Circles for Multiverse Video: group taste pooling over MLS (Marmot), pairwise-masked secure aggregation with distributed DP noise, and core's circle output policy. Not audited; not for production.",
   "license": "Apache-2.0",
   "type": "module",
   "private": true,

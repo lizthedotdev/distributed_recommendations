@@ -239,7 +239,7 @@ export function recipeToJson(recipe: Recipe): object {
 export const DEFAULT_RECIPE: Recipe = parseRecipe({
   version: 1,
   name: "Following + matches",
-  author: "Match Feed",
+  author: "Multiverse Video",
   weights: { follow: 4, taste: 0.9, match: 6, circle: 6, second: 6, explore: 1 },
   recencyHalfLifeDays: 14,
   exploreShare: EXPLORE_SHARE.default,
@@ -250,7 +250,7 @@ export const DEFAULT_RECIPE: Recipe = parseRecipe({
 export const FOLLOWING_CHRONOLOGICAL_RECIPE: Recipe = parseRecipe({
   version: 1,
   name: "Following only, newest first",
-  author: "Match Feed",
+  author: "Multiverse Video",
   weights: { follow: 1 },
   recencyHalfLifeDays: 0,
   exploreShare: 0,

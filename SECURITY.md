@@ -1,6 +1,6 @@
 # Security policy
 
-This project (working name **Meme Video**; code name Match Feed) is published by
+This project (**Multiverse Video**) is published by
 **The Multiverse School**. It is a privacy tool, so we treat privacy flaws as security
 flaws: if something lets a server, relay, peer or observer learn what a user watched,
 endorsed or matched with, beyond what [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md)

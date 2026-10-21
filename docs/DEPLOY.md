@@ -1,6 +1,6 @@
 # Deploying
 
-How the app (working name **Meme Video**, set once as the `APP_NAME` repository
+How the app (**Multiverse Video**, set once as the `APP_NAME` repository
 variable for the workflows and once in `infra/relay/.env` for the relay) is built,
 checked, attested and published, and the exact settings the repository owner has to
 create. Nothing deploys until the owner opts in.
@@ -65,7 +65,7 @@ Create the repository variable (*Settings, Secrets and variables, Actions, Varia
 | Variable | Value |
 |---|---|
 | `WEB_DEPLOY_ENABLED` | `true`. While unset, every job in `deploy-web.yml` is skipped |
-| `APP_NAME` | optional, defaults to `Meme Video`. Used in job summaries and pin names |
+| `APP_NAME` | optional, defaults to `Multiverse Video`. Used in job summaries and pin names |
 
 With only this set, a run builds, tests, checks reproducibility, and uploads the
 `web-dist` artifact (the `dist/` folder) and `web-release` (deterministic
@@ -245,9 +245,8 @@ SHA-256 manifest). A test that injected `Date.now()` into `sw.js` made the check
 6. **Ship `.well-known/security.txt`:** copy `infra/web/.well-known/security.txt` into
    `public/.well-known/` after filling in the placeholders. Both deploy paths keep
    dot-directories.
-7. **One name.** `public/manifest.webmanifest` and the artifact `<title>` still say "Match
-   Feed", while `apps/mobile/brand.json` says "Meme Video". Read it from one place at
-   build time (as `apps/mobile` does), so a rename is a one-line change.
+7. **One name.** Done: the manifest and the artifact `<title>` come from
+   `apps/web/src/brand.json` at build time, kept in step with `apps/mobile/brand.json`.
 
 ## 6. Relay
 

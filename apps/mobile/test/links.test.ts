@@ -36,12 +36,12 @@ test("shared text picks the first usable item", () => {
 
 test("deep links", () => {
   assert.equal(classifyLink(`nostr:${NPUB}`, "deeplink")?.kind, "nostr");
-  assert.equal(classifyLink("memevideo://share?text=hi", "deeplink"), null);
+  assert.equal(classifyLink("multiversevideo://share?text=hi", "deeplink"), null);
 });
 
 test("share handoff URL", () => {
-  assert.deepEqual(parseShareHandoff("memevideo://share?text=a%20b", "memevideo"), { text: "a b" });
-  assert.deepEqual(parseShareHandoff("memevideo://share", "memevideo"), { text: null });
-  assert.equal(parseShareHandoff("otherapp://share?text=a", "memevideo"), null);
-  assert.equal(parseShareHandoff("memevideo://open", "memevideo"), null);
+  assert.deepEqual(parseShareHandoff("multiversevideo://share?text=a%20b", "multiversevideo"), { text: "a b" });
+  assert.deepEqual(parseShareHandoff("multiversevideo://share", "multiversevideo"), { text: null });
+  assert.equal(parseShareHandoff("otherapp://share?text=a", "multiversevideo"), null);
+  assert.equal(parseShareHandoff("multiversevideo://open", "multiversevideo"), null);
 });

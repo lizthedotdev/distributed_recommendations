@@ -1,4 +1,4 @@
-# Match Feed simulation harness
+# Multiverse Video simulation harness
 
 Synthetic-data simulations for the open questions in `docs/DESIGN.md` and the
 "simulate T2, T3, T7" item in `docs/THREAT_MODEL.md`. Results and recommended

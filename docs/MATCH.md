@@ -1,4 +1,4 @@
-# Match Feed: the 1:1 Match protocol
+# Multiverse Video: the 1:1 Match protocol
 
 Status: prototype, 2026-10-19. Implemented in `packages/match`. Wire schemas: `PROTOCOL.md` §6.
 Companion to `DESIGN.md` (Match protocol), `THREAT_MODEL.md` (T2, T4, T5, T10, T15) and `SIMULATION_RESULTS.md` (Exp 4).
