@@ -151,6 +151,18 @@ export function playerPlan(active: number, count: number): PlayerMode[] {
   );
 }
 
+/**
+ * Whether a reel's embed has to be reloaded to reach the wanted mute state.
+ * PeerTube's embed API has no unmute: `setVolume` only sets the volume, so an
+ * embed loaded with `muted=1` stays silent at any volume until it's reloaded
+ * with `muted=0`. Muting works on a ready embed (setVolume 0). Without the API
+ * (not ready) only a reload changes anything.
+ */
+export function needsSoundReload(embedMuted: boolean, ready: boolean, wantMuted: boolean): boolean {
+  if (embedMuted === wantMuted) return false;
+  return !ready || embedMuted;
+}
+
 export function shouldLoadMore(active: number, count: number, ahead = REELS_LOAD_AHEAD): boolean {
   return count === 0 || active >= count - 1 - ahead;
 }

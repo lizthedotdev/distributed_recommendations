@@ -7,6 +7,9 @@
 // If the instance never completes the handshake (old PeerTube, API disabled), the
 // player still works: autoplay and mute are URL flags, and pausing an off-screen
 // video falls back to unloading it.
+//
+// The API has no unmute: setVolume leaves an embed loaded with `muted=1` muted,
+// so turning sound on means reloading it with `muted=0` (`embedMuted`).
 
 import type { Video } from "../lib/core.ts";
 import { embedOrigin, embedUrl } from "../lib/videos.ts";
@@ -33,20 +36,25 @@ export class EmbedPlayer {
   private readonly origin: string;
   private nextId = 1;
   ready = false;
+  /** The embed's `muted` URL flag, which setVolume can't undo. */
+  readonly embedMuted: boolean;
+  /** Last reported position in seconds, so a reload can resume there. */
+  position = 0;
   private wantPlay: boolean;
   onStatus?: (s: PlayerStatus) => void;
   onReady?: () => void;
 
   constructor(
     v: Video,
-    opts: { p2p: boolean; muted: boolean; autoplay: boolean },
+    opts: { p2p: boolean; muted: boolean; autoplay: boolean; start?: number },
   ) {
     listen();
+    this.embedMuted = opts.muted;
     this.origin = embedOrigin(v) ?? "*";
     this.wantPlay = opts.autoplay;
     this.iframe = document.createElement("iframe");
     this.iframe.className = "reel-frame";
-    this.iframe.src = embedUrl(v, { p2p: opts.p2p, autoplay: opts.autoplay, muted: opts.muted, loop: true, api: true, controls: false }) ?? "about:blank";
+    this.iframe.src = embedUrl(v, { p2p: opts.p2p, autoplay: opts.autoplay, muted: opts.muted, loop: true, api: true, controls: false, start: opts.start }) ?? "about:blank";
     this.iframe.title = `Video: ${v.title}`;
     this.iframe.setAttribute("allow", "autoplay; fullscreen; picture-in-picture");
     this.iframe.setAttribute("referrerpolicy", "no-referrer");
@@ -105,6 +113,7 @@ export class EmbedPlayer {
       this.onReady?.();
     } else if (m.method === "peertube::playbackStatusUpdate" && m.params && typeof m.params === "object") {
       const p = m.params as Record<string, unknown>;
+      this.position = Number(p.position) || 0;
       this.onStatus?.({
         position: Number(p.position) || 0,
         duration: Number(p.duration) || 0,

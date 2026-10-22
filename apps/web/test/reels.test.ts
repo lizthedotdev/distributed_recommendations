@@ -7,6 +7,7 @@ import {
   applyPage,
   extendReels,
   isShortForm,
+  needsSoundReload,
   newPager,
   nextPages,
   pagerExhausted,
@@ -134,4 +135,14 @@ test("keyboard: arrows / j / k move, space pauses, m mutes, modifiers ignored", 
   assert.equal(reelKey({ key: "x" }), null);
   const kept: ReelItem[] = [];
   assert.equal(kept.length, 0);
+});
+
+test("needsSoundReload: unmuting an embed loaded muted needs a reload, muting a ready one doesn't", () => {
+  // PeerTube's setVolume can't clear the embed's muted=1 flag.
+  assert.equal(needsSoundReload(true, true, false), true);
+  assert.equal(needsSoundReload(true, false, false), true);
+  assert.equal(needsSoundReload(false, true, true), false);
+  assert.equal(needsSoundReload(false, false, true), true);
+  assert.equal(needsSoundReload(true, true, true), false);
+  assert.equal(needsSoundReload(false, true, false), false);
 });

@@ -79,5 +79,7 @@ test("handles, instances and embed URLs", () => {
   const v = { id: "https://t.example/videos/watch/0a1b2c3d-1111", title: "t", creator: "a@t.example", durationSec: 0, publishedAt: new Date(), tags: [] };
   assert.match(embedUrl(v, { p2p: false })!, /^https:\/\/t\.example\/videos\/embed\/0a1b2c3d-1111\?p2p=0&/);
   assert.match(embedUrl(v, { p2p: true })!, /p2p=1/);
+  assert.match(embedUrl(v, { p2p: false, muted: false, start: 12.7 })!, /muted=0&start=12$/);
+  assert.doesNotMatch(embedUrl(v, { p2p: false, start: 0.4 })!, /start=/);
   assert.equal(formatDuration(3725), "1:02:05");
 });
