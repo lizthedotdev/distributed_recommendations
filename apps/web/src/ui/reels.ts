@@ -8,7 +8,7 @@
 
 import type { App } from "../app.ts";
 import type { ReelItem } from "../lib/reels.ts";
-import { playerPlan, reelKey, shouldLoadMore } from "../lib/reels.ts";
+import { needsSoundReload, playerPlan, reelKey, shouldLoadMore } from "../lib/reels.ts";
 import type { PlayerMode } from "../lib/reels.ts";
 import { disclosureIndex } from "../lib/candidates.ts";
 import { parseChannelInput } from "../lib/handles.ts";
@@ -36,7 +36,6 @@ interface ReelNode {
   rail: HTMLElement;
   info: HTMLElement;
   player: EmbedPlayer | null;
-  playerMuted: boolean;
   mode: PlayerMode;
   watched: boolean;
   /** Blurred by moderation: no autoplay, a cover with "Show anyway". */
@@ -200,7 +199,7 @@ class ReelsView {
       info,
       rail,
     );
-    const n: ReelNode = { id: v.id, item: r, el, media, tap, rail, info, player: null, playerMuted: true, mode: "none", watched: false, blurred: false, cover: null, timers: [] };
+    const n: ReelNode = { id: v.id, item: r, el, media, tap, rail, info, player: null, mode: "none", watched: false, blurred: false, cover: null, timers: [] };
     this.refresh(n);
     return n;
   }
@@ -342,10 +341,10 @@ class ReelsView {
     });
   }
 
-  private mount(n: ReelNode, autoplay: boolean) {
+  private mount(n: ReelNode, autoplay: boolean, start?: number) {
     if (!this.live || n.blurred) return;
     const muted = this.app.s.reels.muted;
-    const p = new EmbedPlayer(n.item.item.video, { p2p: this.app.s.settings.p2p, muted, autoplay });
+    const p = new EmbedPlayer(n.item.item.video, { p2p: this.app.s.settings.p2p, muted, autoplay, start });
     p.onReady = () => {
       if (n.mode !== "play") p.pause();
       this.refresh(n);
@@ -354,7 +353,6 @@ class ReelsView {
       if (st.duration > 0 && st.position / st.duration >= FINISH_SHARE && n.mode === "play") this.app.noteFinish(n.item.item.video, n.item.item.primary);
     };
     n.player = p;
-    n.playerMuted = muted;
     n.media.insertBefore(p.iframe, n.tap);
   }
 
@@ -371,8 +369,13 @@ class ReelsView {
     if (mode === "none") return this.teardown(n);
     if (mode === "play") {
       this.app.s.reels.paused = false;
-      if (n.player && (!n.player.ready && prev === "preload" || n.playerMuted !== this.app.s.reels.muted && !n.player.ready)) this.teardown(n);
-      if (!n.player) this.mount(n, true);
+      const muted = this.app.s.reels.muted;
+      let start: number | undefined;
+      if (n.player && (!n.player.ready && prev === "preload" || needsSoundReload(n.player.embedMuted, n.player.ready, muted))) {
+        start = n.player.position;
+        this.teardown(n);
+      }
+      if (!n.player) this.mount(n, true, start);
       else {
         n.player.play();
         if (n.player.ready) n.player.setMuted(this.app.s.reels.muted);
@@ -444,13 +447,14 @@ class ReelsView {
     s.muted = !s.muted;
     const n = this.nodes[this.active];
     if (n?.player) {
-      if (n.player.ready) {
-        n.player.setMuted(s.muted);
-        n.playerMuted = s.muted;
-      } else {
+      if (needsSoundReload(n.player.embedMuted, n.player.ready, s.muted)) {
+        // The click is a user gesture, and the frame's allow="autoplay" passes it
+        // on, so the reloaded embed may autoplay with sound.
+        const start = n.player.position;
         this.teardown(n);
-        this.mount(n, true);
-      }
+        s.paused = false;
+        this.mount(n, true, start);
+      } else n.player.setMuted(s.muted);
     }
     for (const x of this.nodes) this.refresh(x);
     this.app.toast(s.muted ? "Muted" : "Sound on");

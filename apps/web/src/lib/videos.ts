@@ -58,7 +58,7 @@ export function watchId(url: string): { origin: string; id: string } | null {
  */
 export function embedUrl(
   v: Video,
-  opts: { p2p: boolean; autoplay?: boolean; muted?: boolean; loop?: boolean; api?: boolean; controls?: boolean },
+  opts: { p2p: boolean; autoplay?: boolean; muted?: boolean; loop?: boolean; api?: boolean; controls?: boolean; start?: number },
 ): string | null {
   const w = watchId(v.url ?? v.id);
   if (!w) return null;
@@ -73,6 +73,7 @@ export function embedUrl(
   if (opts.loop) q.set("loop", "1");
   if (opts.api) q.set("api", "1");
   if (opts.controls === false) q.set("controlBar", "0");
+  if (opts.start && opts.start >= 1) q.set("start", String(Math.floor(opts.start)));
   return `${w.origin}/videos/embed/${encodeURIComponent(w.id)}?${q}`;
 }
 
