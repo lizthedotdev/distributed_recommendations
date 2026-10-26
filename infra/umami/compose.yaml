@@ -30,7 +30,7 @@ x-db-env: &db-env
 
 services:
   postgres:
-    image: postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    image: postgres:18.4-alpine@sha256:9a8afca54e7861fd90fab5fdf4c42477a6b1cb7d293595148e674e0a3181de15
     <<: *hardening
     cap_add: [CHOWN, DAC_OVERRIDE, FOWNER, SETGID, SETUID]
     restart: unless-stopped
@@ -80,7 +80,7 @@ services:
   # Umami keeps data forever by default. This deletes events, event data and
   # sessions older than RETENTION_DAYS (default 30), every hour.
   retention:
-    image: postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    image: postgres:18.4-alpine@sha256:9a8afca54e7861fd90fab5fdf4c42477a6b1cb7d293595148e674e0a3181de15
     <<: *hardening
     read_only: true
     restart: unless-stopped
