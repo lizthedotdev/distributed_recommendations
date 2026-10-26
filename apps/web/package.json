@@ -30,7 +30,7 @@
     "nostr-tools": "2.25.2",
     "ohttp-ts": "0.6.1",
     "playwright": "1.56.1",
-    "typescript": "5.9.3",
+    "typescript": "7.0.2",
     "ws": "8.21.3"
   }
 }
