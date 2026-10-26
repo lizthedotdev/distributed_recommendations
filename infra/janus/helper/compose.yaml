@@ -30,7 +30,7 @@ x-hardening: &hardening
     - /tmp
 
 x-janus: &janus
-  image: us-west2-docker.pkg.dev/divviup-artifacts-public/janus/janus_aggregator:0.7.143@sha256:a3bd90477d202ffb990b2b1f813e283da7b473121b3d3c2c5ef534f0b726a293
+  image: us-west2-docker.pkg.dev/divviup-artifacts-public/janus/janus_aggregator:0.7.144@sha256:23387c5890772d96b4932033bfc7473c3b1e7b05ca2c0d114bf558f352bbfe3c
   <<: *hardening
   restart: unless-stopped
   logging: *logging
