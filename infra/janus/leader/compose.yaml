@@ -74,7 +74,7 @@ services:
       retries: 20
 
   migrate:
-    image: us-west2-docker.pkg.dev/divviup-artifacts-public/janus/janus_db_migrator:0.7.143@sha256:bde44db3290fe8c17c26989783729ab073f6d05f99efe14a032701759495a1fa
+    image: us-west2-docker.pkg.dev/divviup-artifacts-public/janus/janus_db_migrator:0.7.144@sha256:cfeb34dbeeefbce11a3337c2e1cd1c5275988d66f2a04dea5028865649adf245
     <<: *hardening
     restart: "no"
     logging: *logging
