@@ -23,7 +23,7 @@ tauri = { version = "=2.12.1", features = [] }
 serde = { version = "=1.0.229", features = ["derive"] }
 # OS keychain: keyring-core with the platform-native stores from the keyring-rs maintainers
 # (open-source-cooperative/keyring-rs). See README.md for why not a Tauri keychain plugin.
-keyring-core = "=1.0.0"
+keyring-core = "=1.0.1"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 apple-native-keyring-store = "=1.0.2"
